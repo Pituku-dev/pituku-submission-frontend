@@ -1,6 +1,7 @@
+import WithAuth from "../components/WithAuth";
 import Wrapper from "../components/Wrapper";
 
-export default function DashboardPage(props) {
+const DashboardPage = (props) => {
   return (
     <Wrapper currentMenu="dashboard" breadcrumbs={[
       {
@@ -13,3 +14,5 @@ export default function DashboardPage(props) {
     </Wrapper>
   );
 }
+
+export default WithAuth(DashboardPage);

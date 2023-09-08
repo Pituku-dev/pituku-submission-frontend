@@ -9,28 +9,54 @@ import {
   Heading,
   Input,
   InputGroup,
-  InputRightAddon,
   InputRightElement,
   Link,
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import CookieCutter from "cookie-cutter";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../stores/useUserStore";
+import http from "../utils/http";
 
 const LoginPage = () => {
   let navigate = useNavigate();
   const toast = useToast();
+  const { setRole } = useUserStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [show, setShow] = useState(false);
 
-  useEffect(() => {
-  }, []);
-
   const signIn = async () => {
+    setIsloading(true);
+    http
+      .post("/login", {
+        email: username,
+        password,
+      })
+      .then((res) => {
+        CookieCutter.set("access_token", res.data.data.accessToken);
+        setRole(res.data.data.role);
+        navigate("/");
+      })
+      .catch((err) => {
+        if (err.response && err.response.data) {
+          toast({
+            title: "Sign in error",
+            description: err.response.data.message[0],
+            status: "error",
+            isClosable: true,
+          });
+        }
+        console.log(err);
+      })
+      .finally(() => {
+        setIsloading(false);
+      });
   };
+
   return (
     <>
       <Flex h="85vh" w="100vw">

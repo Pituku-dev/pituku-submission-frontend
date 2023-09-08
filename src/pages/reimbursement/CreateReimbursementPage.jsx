@@ -1,3 +1,4 @@
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -11,7 +12,6 @@ import {
   GridItem,
   Heading,
   Input,
-  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -29,11 +29,34 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import Wrapper from "../../components/Wrapper";
-import { List } from "dom";
-import { AddIcon } from "@chakra-ui/icons";
+import { useRef, useState } from "react";
+import http from "../../utils/http";
 
 export default function CreateReimbursementPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const uploadFileRef = useRef();
+  const [isLoadingUploadFile, setIsLoadingUploadFile] = useState(false);
+  const [reimbursementItems, setReimbursementItems] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const onUploadFile = (event) => {
+    setIsLoadingUploadFile(true);
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
+    console.log(event.target.files[0]);
+
+    http
+      .post("/reimbursements/upload-evidence", formData)
+      .then((response) => {
+        setSelectedFile(event.target.files[0]);
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+      })
+      .finally(() => {
+        setIsLoadingUploadFile(false);
+      });
+  };
 
   return (
     <Wrapper
@@ -204,9 +227,27 @@ export default function CreateReimbursementPage() {
               <FormLabel>Detail</FormLabel>
               <Textarea placeholder="Here is a sample placeholder" />
             </FormControl>
-            <FormControl>
+            <FormControl mt="4">
               <FormLabel>Foto</FormLabel>
-              <Input type="file" />
+              <Input
+                ref={uploadFileRef}
+                type="file"
+                onChange={onUploadFile}
+                hidden
+              />
+              {selectedFile ? (
+                <Text>{selectedFile.name}</Text>
+              ) : (
+                <Button
+                  isLoading={isLoadingUploadFile}
+                  colorScheme="teal"
+                  variant="outline"
+                  width="100%"
+                  onClick={() => uploadFileRef.current.click()}
+                >
+                  Upload File
+                </Button>
+              )}
             </FormControl>
             <FormControl mt="4">
               <FormLabel>Harga</FormLabel>

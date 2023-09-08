@@ -25,13 +25,51 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import Wrapper from "../../components/Wrapper";
-import { AddIcon, CheckIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  Search2Icon,
+} from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import http from "../../utils/http";
+import { useEffect, useState } from "react";
+import WithAuth from "../../components/WithAuth";
 
-export default function ListReimbursementPage() {
+const ListReimbursementPage = () => {
+  const toast = useToast();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getReimbursements()
+  }, [])
+
+  const getReimbursements = () => {
+    setIsLoading(true);
+    http
+      .get("/reimbursements")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data) {
+          toast({
+            title: "Error getting data reimbursement",
+            description: err.response.data.message,
+            status: "error",
+            isClosable: true,
+          });
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <Wrapper
       currentMenu="reimbursement"
@@ -235,3 +273,5 @@ export default function ListReimbursementPage() {
     </Wrapper>
   );
 }
+
+export default WithAuth(ListReimbursementPage);

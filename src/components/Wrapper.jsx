@@ -19,7 +19,6 @@ import {
   Grid,
   GridItem,
   HStack,
-  Heading,
   Icon,
   Image,
   Menu,
@@ -30,21 +29,24 @@ import {
   Show,
   Text,
   useColorMode,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
+import CookieCutter from "cookie-cutter";
 import React from "react";
 import { FiLogOut, FiMenu, FiMoon, FiSun, FiUser } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import PitukuLogo from "../assets/images/pituku_logo.webp";
+import { useUserStore } from "../stores/useUserStore";
 import Sidebar from "./Sidebar";
 
 export default function Wrapper(props) {
   const navigate = useNavigate();
+  const { role } = useUserStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const btnRef = React.useRef();
   const signOut = async () => {
-    // CookieCutter.set('access_token', '');
+    CookieCutter.set('access_token', '');
     return navigate("/login");
   };
 
@@ -90,7 +92,7 @@ export default function Wrapper(props) {
                     </Avatar>
                     <Box ml={4}>
                       <Text fontSize="lg">Fahriansyah</Text>
-                      <Text fontSize="sm">Head Division</Text>
+                      <Text fontSize="sm">{role}</Text>
                     </Box>
                   </Flex>
                 </MenuButton>
@@ -159,7 +161,7 @@ export default function Wrapper(props) {
               mb="5"
             >
               {props.breadcrumbs.map((item, index) => (
-                <BreadcrumbItem>
+                <BreadcrumbItem key={index}>
                   <BreadcrumbLink
                     isCurrentPage={item.isCurrentPage}
                     href={item.url}
@@ -181,7 +183,7 @@ export default function Wrapper(props) {
               mb="5"
             >
               {props.breadcrumbs.map((item, index) => (
-                <BreadcrumbItem>
+                <BreadcrumbItem key={index}>
                   <BreadcrumbLink
                     isCurrentPage={item.isCurrentPage}
                     href={item.url}
