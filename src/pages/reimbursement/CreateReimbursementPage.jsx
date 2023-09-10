@@ -100,6 +100,7 @@ const CreateReimbursementPage = () => {
     setQuantity(0);
     setDescription("");
     setPhoto("");
+    setSelectedFile(null);
     onClose();
   };
 
