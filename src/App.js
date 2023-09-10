@@ -8,6 +8,7 @@ import ListReimbursementApprovalPage from "./pages/reimbursement-approval/ListRe
 import LoginPage from "./pages/LoginPage";
 import CreateReimbursementPage from "./pages/reimbursement/CreateReimbursementPage";
 import ListReimbursementPage from "./pages/reimbursement/ListReimbursementPage";
+import DetailReimbursementPage from "./pages/reimbursement/DetailReimbursementPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/reimbursement" element={<ListReimbursementPage />} />
+        <Route path="/reimbursement/d/:id" element={<DetailReimbursementPage />} />
         <Route path="/reimbursement/create" element={<CreateReimbursementPage />} />
         <Route path="/reimbursement-history" element={<ListReimbursementHistoryPage />} />
         <Route path="/reimbursement-approval" element={<ListReimbursementApprovalPage />} />

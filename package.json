@@ -5,6 +5,7 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/react": "^2.8.0",
+    "@develoka/angka-terbilang-js": "^1.4.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@testing-library/jest-dom": "^5.17.0",
@@ -12,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.0",
     "cookie-cutter": "^0.2.0",
+    "dayjs": "^1.11.9",
     "dom": "0.0.3",
     "framer-motion": "^10.16.2",
     "react": "^18.2.0",
