@@ -15,6 +15,7 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
+import { CalendarIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import WithAuth from "../../components/WithAuth";
@@ -106,7 +107,7 @@ const DetailReimbursementPage = () => {
       <Card>
         <CardBody>
           <Flex>
-            <Button ml="auto" onClick={() => printHandler()}>
+            <Button ml="auto" onClick={() => printHandler()} leftIcon={<CalendarIcon />}>
               Print
             </Button>
           </Flex>

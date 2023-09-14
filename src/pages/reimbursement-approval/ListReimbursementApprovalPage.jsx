@@ -16,7 +16,16 @@ import {
   Thead,
   Tooltip,
   Tr,
+  Text,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalFooter,
+  ModalBody,
+  useDisclosure
 } from "@chakra-ui/react";
 import Wrapper from "../../components/Wrapper";
 import { CheckIcon, ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
@@ -27,12 +36,16 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { rupiah } from "../../utils/currency";
 import WithAuth from "../../components/WithAuth";
+import pdf from "../../components/Pdf";
+import ReactDOMServer from "react-dom/server";
+import html2pdf from "html2pdf.js/dist/html2pdf.min";
 
 const ListReimbursementApprovalPage = () => {
   const toast = useToast();
   const [reimbursements, setReimbursements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     getReimbursements();
@@ -60,6 +73,34 @@ const ListReimbursementApprovalPage = () => {
         setIsLoading(false);
       });
   };
+
+  const download = (id) => {
+    http
+      .get(`/reimbursements/${id}`)
+      .then((res) => {
+        const data = res.data.data;
+        const printElement = ReactDOMServer.renderToString(
+          pdf({
+            submissionDate: dayjs(data.submissionDate)
+              .locale("id")
+              .format("DD MMM YYYY"),
+            submissionNumber: data.submissionNumber,
+            title: data.title,
+            pic: "dia",
+            cp: "saya",
+            items: data.submissionItems,
+          })
+        );
+    
+        html2pdf().from(printElement).save();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
 
   return (
     <Wrapper
@@ -112,7 +153,9 @@ const ListReimbursementApprovalPage = () => {
                   </Tooltip>
                 </Td>
                 <Td>
-                  <Badge colorScheme="green">DONE</Badge>
+                  {item.status.toLowerCase() === 'diproses' ? (
+                    <Badge colorScheme="yellow">{item.status}</Badge>
+                  ):null}
                 </Td>
                 <Td>
                   <Menu>
@@ -129,9 +172,7 @@ const ListReimbursementApprovalPage = () => {
                       >
                         Detail
                       </MenuItem>
-                      <MenuItem>Download</MenuItem>
-                      <MenuItem>Create a Copy</MenuItem>
-                      <MenuItem>Mark as Draft</MenuItem>
+                      <MenuItem onClick={() => download()}>Download</MenuItem>
                       <MenuItem
                         color="green.700"
                         _hover={{
@@ -139,8 +180,9 @@ const ListReimbursementApprovalPage = () => {
                           color: "white",
                         }}
                         icon={<CheckIcon />}
+                        onClick={onOpen}
                       >
-                        Tandai Selesai
+                        Tandai Approve
                       </MenuItem>
                     </MenuList>
                   </Menu>
@@ -162,6 +204,20 @@ const ListReimbursementApprovalPage = () => {
           </Tfoot>
         </Table>
       </TableContainer>
+
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Approve Reimbursement</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Apakah anda yakin ingin approve reimbursement ini?</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Wrapper>
   );
 }

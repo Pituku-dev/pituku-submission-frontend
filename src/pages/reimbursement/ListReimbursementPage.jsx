@@ -36,7 +36,10 @@ import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
 import http from "../../utils/http";
 import dayjs from "dayjs";
-import { rupiah } from '../../utils/currency'
+import { rupiah } from '../../utils/currency';
+import pdf from "../../components/Pdf";
+import ReactDOMServer from "react-dom/server";
+import html2pdf from "html2pdf.js/dist/html2pdf.min";
 
 const ListReimbursementPage = () => {
   const toast = useToast();
@@ -70,6 +73,34 @@ const ListReimbursementPage = () => {
         setIsLoading(false);
       });
   };
+
+  const download = (id) => {
+    http
+      .get(`/reimbursements/${id}`)
+      .then((res) => {
+        const data = res.data.data;
+        const printElement = ReactDOMServer.renderToString(
+          pdf({
+            submissionDate: dayjs(data.submissionDate)
+              .locale("id")
+              .format("DD MMM YYYY"),
+            submissionNumber: data.submissionNumber,
+            title: data.title,
+            pic: "dia",
+            cp: "saya",
+            items: data.submissionItems,
+          })
+        );
+    
+        html2pdf().from(printElement).save();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
 
   return (
     <Wrapper
@@ -141,10 +172,9 @@ const ListReimbursementPage = () => {
                 <Td>{rupiah(item.total)}</Td>
                 <Td>HO</Td>
                 <Td>
-                  <Tooltip label="David Abraham">
+                  <Tooltip label={item.personInCharge}>
                     <Avatar
-                      name="David Abraham"
-                      src="https://bit.ly/dan-abramov"
+                      name={item.personInCharge}
                     />
                   </Tooltip>
                 </Td>
@@ -166,9 +196,7 @@ const ListReimbursementPage = () => {
                       >
                         Detail
                       </MenuItem>
-                      <MenuItem>Download</MenuItem>
-                      <MenuItem>Create a Copy</MenuItem>
-                      <MenuItem>Mark as Draft</MenuItem>
+                      <MenuItem onClick={() => download(item.id)}>Download</MenuItem>
                       <MenuItem
                         color="green.700"
                         _hover={{
