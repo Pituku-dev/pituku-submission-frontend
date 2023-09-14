@@ -105,10 +105,9 @@ const ListReimbursementApprovalPage = () => {
                 <Td>{rupiah(item.total)}</Td>
                 <Td>HO</Td>
                 <Td>
-                  <Tooltip label="David Abraham">
+                  <Tooltip label={item.personInCharge}>
                     <Avatar
-                      name="David Abraham"
-                      src="https://bit.ly/dan-abramov"
+                      name={item.personInCharge}
                     />
                   </Tooltip>
                 </Td>
