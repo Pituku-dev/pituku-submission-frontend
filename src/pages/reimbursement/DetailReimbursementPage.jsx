@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardBody,
   Flex,
@@ -21,10 +22,15 @@ import Wrapper from "../../components/Wrapper";
 import http from "../../utils/http";
 import dayjs from "dayjs";
 import { rupiah } from "../../utils/currency";
+import ReactDOMServer from "react-dom/server";
+import html2pdf from "html2pdf.js/dist/html2pdf.min";
+import { useUserStore } from "../../stores/useUserStore";
+import pdf from "../../components/Pdf";
 
 const DetailReimbursementPage = () => {
   const toast = useToast();
   let { id } = useParams();
+  const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
     id: "",
@@ -58,6 +64,24 @@ const DetailReimbursementPage = () => {
     getReimbursement();
   }, []);
 
+  const printHandler = () => {
+    const printElement = ReactDOMServer.renderToString(
+      pdf({
+        submissionDate: dayjs(data.submissionDate)
+          .locale("id")
+          .format("DD MMM YYYY"),
+        submissionNumber: data.submissionNumber,
+        title: data.title,
+        pic: "dia",
+        cp: "saya",
+        items: data.submissionItems,
+      })
+    );
+    console.log(printElement);
+
+    html2pdf().from(printElement).save();
+  };
+
   return (
     <Wrapper
       currentMenu="reimbursement"
@@ -81,6 +105,11 @@ const DetailReimbursementPage = () => {
     >
       <Card>
         <CardBody>
+          <Flex>
+            <Button ml="auto" onClick={() => printHandler()}>
+              Print
+            </Button>
+          </Flex>
           <Grid mt="8" templateColumns="repeat(2, 1fr)" gap={6}>
             <GridItem>
               <Flex>
@@ -132,8 +161,12 @@ const DetailReimbursementPage = () => {
                 >
                   <Box>
                     <Text fontSize={"lg"}>{item.description}</Text>
-                    <Text fontSize={"sm"} color="gray">Harga: {rupiah(item.price)}</Text>
-                    <Text fontSize={"sm"} color="gray">Kuantitas: {item.quantity}</Text>
+                    <Text fontSize={"sm"} color="gray">
+                      Harga: {rupiah(item.price)}
+                    </Text>
+                    <Text fontSize={"sm"} color="gray">
+                      Kuantitas: {item.quantity}
+                    </Text>
                   </Box>
                   <Text ml="auto" color="teal">
                     {rupiah(item.subtotal)}
@@ -144,6 +177,16 @@ const DetailReimbursementPage = () => {
           </Grid>
         </CardBody>
       </Card>
+      {pdf({
+        submissionDate: dayjs(data.submissionDate)
+          .locale("id")
+          .format("DD MMM YYYY"),
+        submissionNumber: data.submissionNumber,
+        title: data.title,
+        pic: "dia",
+        cp: "saya",
+        items: data.submissionItems,
+      })}
     </Wrapper>
   );
 };

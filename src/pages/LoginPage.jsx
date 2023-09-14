@@ -23,7 +23,7 @@ import http from "../utils/http";
 const LoginPage = () => {
   let navigate = useNavigate();
   const toast = useToast();
-  const { setRole } = useUserStore();
+  const { setRole, setUser } = useUserStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -54,7 +54,15 @@ const LoginPage = () => {
       })
       .finally(() => {
         setIsloading(false);
+        getProfile();
       });
+  };
+
+  const getProfile = () => {
+    http.get("/profiles/me").then((res) => {
+      console.log(res.data.data);
+      setUser(res.data.data);
+    });
   };
 
   return (

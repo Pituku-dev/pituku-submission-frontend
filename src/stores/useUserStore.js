@@ -7,8 +7,10 @@ export const useUserStore = create()(
       (set, get) => ({
         isAuthenticated: false,
         role: "",
+        user: {},
         authenticate: (val) => set((state) => ({ isAuthenticated: val })),
         setRole: (val) => set((state) => ({ role: val })),
+        setUser: (val) => set((state) => ({ user: val })),
       }),
       {
         name: "userStore",

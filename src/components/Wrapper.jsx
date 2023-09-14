@@ -41,7 +41,7 @@ import Sidebar from "./Sidebar";
 
 export default function Wrapper(props) {
   const navigate = useNavigate();
-  const { role } = useUserStore();
+  const { role, user } = useUserStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const btnRef = React.useRef();
@@ -91,7 +91,7 @@ export default function Wrapper(props) {
                       <AvatarBadge boxSize="1.25em" bg="green.500" />
                     </Avatar>
                     <Box ml={4}>
-                      <Text fontSize="lg">Fahriansyah</Text>
+                      <Text fontSize="lg">{user.fullName}</Text>
                       <Text fontSize="sm">{role}</Text>
                     </Box>
                   </Flex>

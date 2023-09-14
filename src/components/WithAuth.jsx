@@ -1,7 +1,8 @@
 import { Center, Flex, Spinner } from '@chakra-ui/react';
 import CookieCutter from 'cookie-cutter';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import http from '../utils/http';
+import { useUserStore } from '../stores/useUserStore';
 
 const WithAuth = WrappedComponent => {
   // And return another component
@@ -31,6 +32,11 @@ const WithAuth = WrappedComponent => {
       ] = `${accessToken}`;
 
       // check access token is valid & update state loged in
+      const user = await http.get("/profiles/me");
+      if (user.data.status !== "success") {
+        return false;
+      }
+      
 
       return true;
     };

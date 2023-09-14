@@ -129,8 +129,8 @@ const ListReimbursementPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {reimbursements.map((item) => (
-              <Tr>
+            {reimbursements.map((item, index) => (
+              <Tr key={index}>
                 <Td>
                   {dayjs(item.submissionDate)
                     .locale("id")
