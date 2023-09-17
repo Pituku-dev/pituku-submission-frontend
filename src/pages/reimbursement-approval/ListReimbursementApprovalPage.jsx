@@ -43,6 +43,7 @@ import html2pdf from "html2pdf.js/dist/html2pdf.min";
 const ListReimbursementApprovalPage = () => {
   const toast = useToast();
   const [reimbursements, setReimbursements] = useState([]);
+  const [currentReimbursement, setCurrentReimbursement] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -96,11 +97,38 @@ const ListReimbursementApprovalPage = () => {
       })
       .catch((err) => {
         console.log(err);
+        if (err.response && err.response.data) {
+          toast({
+            title: "Error download data reimbursement",
+            description: err.response.data.message,
+            status: "error",
+            isClosable: true,
+          });
+        }
       })
       .finally(() => {
         setIsLoading(false);
       });
   }
+
+  const approve = () => {
+    http
+      .post(`/reimbursements/${currentReimbursement}/approve`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response && err.response.data) {
+          toast({
+            title: "Error approving data reimbursement",
+            description: err.response.data.message,
+            status: "error",
+            isClosable: true,
+          });
+        }
+      });
+  };
 
   return (
     <Wrapper
@@ -180,7 +208,10 @@ const ListReimbursementApprovalPage = () => {
                           color: "white",
                         }}
                         icon={<CheckIcon />}
-                        onClick={onOpen}
+                        onClick={() => {
+                          setCurrentReimbursement(item.id);
+                          onOpen();
+                        }}
                       >
                         Tandai Approve
                       </MenuItem>
@@ -215,6 +246,7 @@ const ListReimbursementApprovalPage = () => {
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>Close</Button>
+            <Button onClick={() => approve()} colorScheme="teal" ml="2">Approve</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
