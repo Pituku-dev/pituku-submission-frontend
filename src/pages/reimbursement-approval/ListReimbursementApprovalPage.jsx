@@ -64,7 +64,7 @@ const ListReimbursementApprovalPage = () => {
     const getReimbursements = () => {
       setIsLoading(true);
       http
-        .get("/reimbursements")
+        .get("/reimbursements/approval-queue")
         .then((res) => {
           console.log(res);
           setReimbursements(res.data.data);
