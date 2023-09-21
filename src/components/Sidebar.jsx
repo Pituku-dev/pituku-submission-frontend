@@ -12,7 +12,6 @@ export default function Sidebar(props) {
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const { role } = useUserStore();
-  // const [currentMenu, setCurrentMenu] = useState("dashboard");
 
   return (
     <Box position="relative" display="unset">
@@ -85,11 +84,11 @@ export default function Sidebar(props) {
                 props.currentMenu === "reimbursement" ? "bold" : "medium"
               }
             >
-              Pengajuan
+              Pengajuan Saya
             </Text>
           </Flex>
         </Box>
-        {headDivisionList.includes(role) ? (
+        {headDivisionList.includes(role) || role === 'Finance Staff' ? (
           <Box
             as="button"
             transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
@@ -179,7 +178,7 @@ export default function Sidebar(props) {
           }
           _hover={{ bg: colorMode === "light" ? "orange.50" : "orange.900" }}
           onClick={() => {
-            navigate("/settings");
+            navigate("/settings/profile");
           }}
         >
           <Flex>
@@ -188,7 +187,7 @@ export default function Sidebar(props) {
               fontSize="md"
               fontWeight={props.currentMenu === "settings" ? "bold" : "medium"}
             >
-              Settings
+              Pengaturan
             </Text>
           </Flex>
         </Box>

@@ -98,7 +98,9 @@ export default function Wrapper(props) {
                 </MenuButton>
                 <Portal>
                   <MenuList>
-                    <MenuItem>Profile</MenuItem>
+                    <MenuItem onClick={() => navigate("/settings/profile")}>
+                      Profile
+                    </MenuItem>
                     <MenuItem
                       color="red"
                       _hover={{

@@ -1,14 +1,14 @@
-import { Route, Routes } from "react-router";
-import DashboardPage from "./pages/DashboardPage";
 import { ChakraProvider } from "@chakra-ui/react";
-import theme from './theme';
+import { Route, Routes } from "react-router";
 import ListReimbursementHistoryPage from "./pages/ reimbursement-history/ListReimbursementHistoryPage";
-import SettingPage from "./pages/SettingPage";
-import ListReimbursementApprovalPage from "./pages/reimbursement-approval/ListReimbursementApprovalPage";
+import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
+import ListReimbursementApprovalPage from "./pages/reimbursement-approval/ListReimbursementApprovalPage";
 import CreateReimbursementPage from "./pages/reimbursement/CreateReimbursementPage";
-import ListReimbursementPage from "./pages/reimbursement/ListReimbursementPage";
 import DetailReimbursementPage from "./pages/reimbursement/DetailReimbursementPage";
+import ListReimbursementPage from "./pages/reimbursement/ListReimbursementPage";
+import ProfilePage from "./pages/settings/ProfilePage";
+import theme from './theme';
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
         <Route path="/reimbursement/create" element={<CreateReimbursementPage />} />
         <Route path="/reimbursement-history" element={<ListReimbursementHistoryPage />} />
         <Route path="/reimbursement-approval" element={<ListReimbursementApprovalPage />} />
-        <Route path="/settings  " element={<SettingPage />} />
+        <Route path="/settings/profile" element={<ProfilePage />} />
         <Route path="/" element={<DashboardPage />} />
       </Routes>
     </ChakraProvider>
