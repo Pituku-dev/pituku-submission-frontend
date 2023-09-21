@@ -46,10 +46,8 @@ const CreateReimbursementPage = () => {
   const [isLoadingUploadFile, setIsLoadingUploadFile] = useState(false);
   const [isLoadingCreate, setIsLoadingCreate] = useState(false);
   const [title, setTitle] = useState("");
-  const [submissionDate, setSubmissionDate] = useState("");
   const [reimbursementItems, setReimbursementItems] = useState([]);
   const [description, setDescription] = useState("");
-  const [detail, setDetail] = useState("");
   const [photo, setPhoto] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -93,8 +91,6 @@ const CreateReimbursementPage = () => {
         subtotal: price * quantity,
       },
     ]);
-
-    console.log(reimbursementItems);
 
     setPrice(0);
     setQuantity(0);

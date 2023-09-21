@@ -6,17 +6,9 @@ import {
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
+import { headDivisionList } from "../utils/roles";
 
 export default function Sidebar(props) {
-  const superUser = [
-    'Chief Executive Officer',
-    'Chief Operations Officer',
-    'Chief Finance Officer',
-    'Chief Technology & Marketing Officer',
-    'Corporate Secretary',
-    'Chief Strategy Officer',
-    'Head Division',
-  ]
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const { role } = useUserStore();
@@ -97,7 +89,7 @@ export default function Sidebar(props) {
             </Text>
           </Flex>
         </Box>
-        {superUser.includes(role) ? (
+        {headDivisionList.includes(role) ? (
           <Box
             as="button"
             transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
