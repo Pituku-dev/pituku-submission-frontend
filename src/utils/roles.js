@@ -6,4 +6,5 @@ export const headDivisionList = [
   "Corporate Secretary",
   "Chief Strategy Officer",
   "Head Division",
+  "Finance Manager"
 ];
