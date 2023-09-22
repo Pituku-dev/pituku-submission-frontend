@@ -92,7 +92,7 @@ export default function Wrapper(props) {
                     </Avatar>
                     <Box ml={4}>
                       <Text fontSize="lg">{user.fullName}</Text>
-                      <Text fontSize="sm">{role}</Text>
+                      <Text fontSize="sm">{user.role}</Text>
                     </Box>
                   </Flex>
                 </MenuButton>

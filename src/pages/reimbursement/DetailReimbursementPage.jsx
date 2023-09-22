@@ -65,7 +65,8 @@ const DetailReimbursementPage = () => {
 
   useEffect(() => {
     getReimbursement();
-    console.log(user);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const approve = () => {
@@ -124,8 +125,15 @@ const DetailReimbursementPage = () => {
           .format("DD MMM YYYY"),
         submissionNumber: data.submissionNumber,
         title: data.title,
-        pic: "dia",
-        cp: "saya",
+        pic: user.fullName,
+        cp: user.phoneNumber,
+        totalInWords: data.totalInWords,
+        notes: data.notes,
+        bank: user.bank,
+        bankAccountNumber: user.bankAccountNumber,
+        bankAccountName: user.bankAccountName,
+        department: data.department,
+        departmentHead: data.departmentHead,
         items: data.submissionItems,
       })
     );
@@ -185,6 +193,16 @@ const DetailReimbursementPage = () => {
             >
               Print
             </Button>
+            {user.role === "Finance Staff" ? (
+              <Button
+                ml="2"
+                // onClick={() => approve()}
+                leftIcon={<CheckIcon />}
+                colorScheme="teal"
+              >
+                Upload Bukti Transfer
+              </Button>
+            ) : null}
           </Flex>
           {isLoading ? (
             <Box>

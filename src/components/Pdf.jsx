@@ -55,9 +55,9 @@ export default function pdfJSX(props) {
             <div style={{ marginLeft: "auto" }}>
               <p>: {props.submissionDate}</p>
               <p>: {props.submissionNumber}</p>
-              <p>: FINANCE</p>
-              <p style={{ marginTop: "12px" }}>:</p>
-              <p>: </p>
+              <p>: Finance</p>
+              <p style={{ marginTop: "12px" }}>: {props.department}</p>
+              <p>: {props.departmentHead}</p>
               <p>: {props.pic}</p>
               <p>: {props.cp}</p>
             </div>
@@ -217,11 +217,11 @@ export default function pdfJSX(props) {
             <p>Nama Rekening</p>
           </div>
           <div style={{ marginLeft: "auto" }}>
-            <p>: </p>
-            <p>: </p>
-            <p>: </p>
-            <p>:</p>
-            <p>: </p>
+            <p>: {props.totalInWords}</p>
+            <p>: {props.notes}</p>
+            <p>: {props.bank}</p>
+            <p>: {props.bankAccountNumber}</p>
+            <p>: {props.bankAccountName}</p>
           </div>
         </div>
 

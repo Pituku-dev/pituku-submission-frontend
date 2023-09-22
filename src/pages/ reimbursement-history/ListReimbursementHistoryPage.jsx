@@ -195,16 +195,6 @@ export default function ListReimbursementHistoryPage() {
                         <MenuItem onClick={() => download(item.id)}>
                           Download
                         </MenuItem>
-                        <MenuItem
-                          color="green.700"
-                          _hover={{
-                            bg: "green.600",
-                            color: "white",
-                          }}
-                          icon={<CheckIcon />}
-                        >
-                          Tandai Selesai
-                        </MenuItem>
                       </MenuList>
                     </Menu>
                   </Td>
