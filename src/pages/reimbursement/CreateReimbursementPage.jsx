@@ -46,6 +46,7 @@ const CreateReimbursementPage = () => {
   const [isLoadingUploadFile, setIsLoadingUploadFile] = useState(false);
   const [isLoadingCreate, setIsLoadingCreate] = useState(false);
   const [title, setTitle] = useState("");
+  const [notes, setNotes] = useState("");
   const [reimbursementItems, setReimbursementItems] = useState([]);
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState("");
@@ -121,6 +122,7 @@ const CreateReimbursementPage = () => {
       .post("/reimbursements", {
         title,
         total,
+        notes,
         totalInWords: angkaTerbilang(total),
         submissionDate: new Date(),
         submissionItems: reimbursementItems,
@@ -211,6 +213,13 @@ const CreateReimbursementPage = () => {
                 <Textarea
                   placeholder="Hal / Perihal"
                   onChange={(event) => setTitle(event.target.value)}
+                />
+              </FormControl>
+              <FormControl mt="4">
+                <FormLabel>Catatan</FormLabel>
+                <Textarea
+                  placeholder="Catatan"
+                  onChange={(event) => setNotes(event.target.value)}
                 />
               </FormControl>
             </GridItem>

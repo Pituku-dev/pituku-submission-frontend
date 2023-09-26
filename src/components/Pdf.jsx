@@ -1,11 +1,13 @@
 import PitukuLogo from "../assets/images/pituku_logo.webp";
+import Ttd from "../assets/images/ttd.png";
+import { rupiah } from "../utils/currency";
 
 export default function pdfJSX(props) {
   return (
     <>
       <div
         style={{
-          size: "21cm 29.7cm",
+          size: "29.7cm 21cm ",
           margin: "5mm 10mm 5mm 10mm",
         }}
       >
@@ -67,7 +69,7 @@ export default function pdfJSX(props) {
               marginLeft: "auto",
             }}
           >
-            <img src={PitukuLogo} />
+            <img alt="" src={PitukuLogo} />
           </div>
         </div>
 
@@ -173,7 +175,7 @@ export default function pdfJSX(props) {
                     paddingBottom: 14,
                   }}
                 >
-                  Rp. {item.price}
+                  {rupiah(item.price)}
                 </td>
                 <td
                   style={{
@@ -193,7 +195,7 @@ export default function pdfJSX(props) {
                     paddingBottom: 14,
                   }}
                 >
-                  Rp. {item.subtotal}
+                  {rupiah(item.subtotal)}
                 </td>
               </tr>
             ))}
@@ -204,7 +206,6 @@ export default function pdfJSX(props) {
           style={{
             display: "flex",
             flex: "row",
-            // background: "red",
             width: "50%",
             marginTop: "40px",
           }}
@@ -217,7 +218,7 @@ export default function pdfJSX(props) {
             <p>Nama Rekening</p>
           </div>
           <div style={{ marginLeft: "auto" }}>
-            <p>: {props.totalInWords}</p>
+            <p>: {props.totalInWords.toUpperCase()}</p>
             <p>: {props.notes}</p>
             <p>: {props.bank}</p>
             <p>: {props.bankAccountNumber}</p>
@@ -293,7 +294,7 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
-              Atasan Langsung
+              Division Head
             </td>
             <td
               style={{
@@ -314,6 +315,7 @@ export default function pdfJSX(props) {
                 textAlign: "center",
               }}
             >
+              <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
               ( Faiz Fauzani R )
             </td>
             <td
@@ -325,6 +327,7 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
+              <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
               ( Ibu Wulan )
             </td>
             <td
@@ -336,6 +339,7 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
+              <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
               ( Bery Nur Arif )
             </td>
             <td
@@ -347,7 +351,7 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
-              Atasan Langsung
+              {props.departmentHead}
             </td>
             <td
               style={{
@@ -358,7 +362,7 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
-              Nama
+              {props.pic}
             </td>
           </tr>
         </table>

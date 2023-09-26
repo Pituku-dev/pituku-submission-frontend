@@ -1,10 +1,9 @@
 import {
   CalendarIcon,
   CheckIcon,
-  CloseIcon,
   MinusIcon,
   SmallCloseIcon,
-  TimeIcon,
+  TimeIcon
 } from "@chakra-ui/icons";
 import {
   Box,
@@ -21,18 +20,9 @@ import {
   Heading,
   Input,
   Spinner,
-  Step,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
-  Stepper,
   Text,
   Textarea,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import html2pdf from "html2pdf.js/dist/html2pdf.min";
@@ -42,9 +32,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import pdf from "../../components/Pdf";
 import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
+import { useUserStore } from "../../stores/useUserStore";
 import { rupiah } from "../../utils/currency";
 import http from "../../utils/http";
-import { useUserStore } from "../../stores/useUserStore";
 import { headDivisionList } from "../../utils/roles";
 
 const DetailReimbursementPage = () => {
@@ -188,7 +178,7 @@ const DetailReimbursementPage = () => {
           .format("DD MMM YYYY"),
         submissionNumber: data.submissionNumber,
         title: data.title,
-        pic: user.fullName,
+        pic: data.personInCharge,
         cp: user.phoneNumber,
         totalInWords: data.totalInWords,
         notes: data.notes,
@@ -200,7 +190,6 @@ const DetailReimbursementPage = () => {
         items: data.submissionItems,
       })
     );
-    console.log(printElement);
 
     html2pdf().from(printElement).save();
   };
