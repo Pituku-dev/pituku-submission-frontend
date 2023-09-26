@@ -88,7 +88,7 @@ export default function Sidebar(props) {
             </Text>
           </Flex>
         </Box>
-        {headDivisionList.includes(role) || role === 'Finance Staff' ? (
+        {headDivisionList.includes(role) || role === "Finance Staff" ? (
           <Box
             as="button"
             transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
@@ -120,46 +120,48 @@ export default function Sidebar(props) {
                     : "medium"
                 }
               >
-                Approval Pengajuan
+                {role === "Finance Staff" ? "Bukti Pembayaran" : "Approval Pengajuan"}
               </Text>
             </Flex>
           </Box>
         ) : null}
-        <Box
-          as="button"
-          transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
-          px="5"
-          py="3"
-          width="100%"
-          color={colorMode === "light" ? "teal.500" : "teal.200"}
-          textAlign="start"
-          alignItems="baseline"
-          bg={
-            props.currentMenu === "reimbursement-history"
-              ? colorMode === "light"
-                ? "teal.50"
-                : "teal.900"
-              : ""
-          }
-          _hover={{ bg: colorMode === "light" ? "teal.50" : "teal.900" }}
-          onClick={() => {
-            navigate("/reimbursement-history");
-          }}
-        >
-          <Flex>
-            <Icon as={FiLayout} mt="2px" mr="3" w="18px" h="18px" />
-            <Text
-              fontSize="md"
-              fontWeight={
-                props.currentMenu === "reimbursement-history"
-                  ? "bold"
-                  : "medium"
-              }
-            >
-              Riwayat Pengajuan
-            </Text>
-          </Flex>
-        </Box>
+        {headDivisionList.includes(role) ? (
+          <Box
+            as="button"
+            transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
+            px="5"
+            py="3"
+            width="100%"
+            color={colorMode === "light" ? "teal.500" : "teal.200"}
+            textAlign="start"
+            alignItems="baseline"
+            bg={
+              props.currentMenu === "reimbursement-history"
+                ? colorMode === "light"
+                  ? "teal.50"
+                  : "teal.900"
+                : ""
+            }
+            _hover={{ bg: colorMode === "light" ? "teal.50" : "teal.900" }}
+            onClick={() => {
+              navigate("/reimbursement-history");
+            }}
+          >
+            <Flex>
+              <Icon as={FiLayout} mt="2px" mr="3" w="18px" h="18px" />
+              <Text
+                fontSize="md"
+                fontWeight={
+                  props.currentMenu === "reimbursement-history"
+                    ? "bold"
+                    : "medium"
+                }
+              >
+                Riwayat Pengajuan
+              </Text>
+            </Flex>
+          </Box>
+        ) : null}
         <Box
           as="button"
           transition="all 0.2s cubic-bezier(.08,.52,.52,1)"

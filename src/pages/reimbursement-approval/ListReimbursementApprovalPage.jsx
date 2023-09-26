@@ -41,9 +41,12 @@ import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
 import { rupiah } from "../../utils/currency";
 import http from "../../utils/http";
+import { useUserStore } from "../../stores/useUserStore";
+import { headDivisionList } from "../../utils/roles";
 
 const ListReimbursementApprovalPage = () => {
   const toast = useToast();
+  const { user } = useUserStore();
   const [reimbursements, setReimbursements] = useState([]);
   const [currentReimbursement, setCurrentReimbursement] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -63,8 +66,14 @@ const ListReimbursementApprovalPage = () => {
   useEffect(() => {
     const getReimbursements = () => {
       setIsLoading(true);
+
+      let url = "/reimbursements/approval-queue";
+      if (user.role === "Finance Staff") {
+        url = "/reimbursements";
+      }
+
       http
-        .get("/reimbursements/approval-queue")
+        .get(url)
         .then((res) => {
           console.log(res);
           setReimbursements(res.data.data);
@@ -242,34 +251,38 @@ const ListReimbursementApprovalPage = () => {
                           Detail
                         </MenuItem>
                         <MenuItem onClick={() => download()}>Download</MenuItem>
-                        <MenuItem
-                          color="green.700"
-                          _hover={{
-                            bg: "green.600",
-                            color: "white",
-                          }}
-                          icon={<CheckIcon />}
-                          onClick={() => {
-                            setCurrentReimbursement(item.id);
-                            onOpenApprove();
-                          }}
-                        >
-                          Tandai Approve
-                        </MenuItem>
-                        <MenuItem
-                          color="red.700"
-                          _hover={{
-                            bg: "red.600",
-                            color: "white",
-                          }}
-                          icon={<CloseIcon />}
-                          onClick={() => {
-                            setCurrentReimbursement(item.id);
-                            onOpenReject();
-                          }}
-                        >
-                          Tandai Tolak
-                        </MenuItem>
+                        {headDivisionList.includes(user.role) ? (
+                          <>
+                            <MenuItem
+                              color="green.700"
+                              _hover={{
+                                bg: "green.600",
+                                color: "white",
+                              }}
+                              icon={<CheckIcon />}
+                              onClick={() => {
+                                setCurrentReimbursement(item.id);
+                                onOpenApprove();
+                              }}
+                            >
+                              Tandai Approve
+                            </MenuItem>
+                            <MenuItem
+                              color="red.700"
+                              _hover={{
+                                bg: "red.600",
+                                color: "white",
+                              }}
+                              icon={<CloseIcon />}
+                              onClick={() => {
+                                setCurrentReimbursement(item.id);
+                                onOpenReject();
+                              }}
+                            >
+                              Tandai Tolak
+                            </MenuItem>
+                          </>
+                        ) : null}
                       </MenuList>
                     </Menu>
                   </Td>

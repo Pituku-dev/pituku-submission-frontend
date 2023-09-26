@@ -1,9 +1,17 @@
-import { CalendarIcon, CheckIcon, MinusIcon } from "@chakra-ui/icons";
+import {
+  CalendarIcon,
+  CheckIcon,
+  CloseIcon,
+  MinusIcon,
+  SmallCloseIcon,
+  TimeIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Card,
   CardBody,
+  Center,
   Flex,
   FormControl,
   FormHelperText,
@@ -13,6 +21,15 @@ import {
   Heading,
   Input,
   Spinner,
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  Stepper,
   Text,
   Textarea,
   useToast,
@@ -21,7 +38,7 @@ import dayjs from "dayjs";
 import html2pdf from "html2pdf.js/dist/html2pdf.min";
 import { useEffect, useState } from "react";
 import ReactDOMServer from "react-dom/server";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import pdf from "../../components/Pdf";
 import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
@@ -32,9 +49,14 @@ import { headDivisionList } from "../../utils/roles";
 
 const DetailReimbursementPage = () => {
   const toast = useToast();
+  const navigate = useNavigate();
   let { id } = useParams();
   const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingUploadFile, setIsLoadingUploadFile] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [photo, setPhoto] = useState("");
+
   const [data, setData] = useState({
     id: "",
     submissionNumber: "",
@@ -48,11 +70,13 @@ const DetailReimbursementPage = () => {
     department: "",
   });
 
+  const [steps, setSteps] = useState([]);
+  const [activeStep, setActiveStep] = useState(0);
+
   const getReimbursement = () => {
     http
       .get(`/reimbursements/${id}`)
-      .then((res) => {
-        console.log(res);
+      .then(async (res) => {
         setData(res.data.data);
       })
       .catch((err) => {
@@ -65,9 +89,46 @@ const DetailReimbursementPage = () => {
 
   useEffect(() => {
     getReimbursement();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const logs = data.approvalLogs || [];
+    const stepper = [
+      { title: "Division Head", description: "Diproses" },
+      { title: "Finance Manager", description: "Diproses" },
+      { title: "COO", description: "Diproses" },
+      { title: "CFO", description: "Diproses" },
+      { title: "CEO", description: "Diproses" },
+      { title: "Finance Staff", description: "Diproses" },
+    ];
+
+    logs.forEach((item) => {
+      if (item.role === "Division Head") {
+        stepper[0].description = item.status;
+        setActiveStep(1);
+      } else if (item.role === "Finance Manager") {
+        stepper[1].description = item.status;
+        setActiveStep(2);
+      } else if (item.role === "Chief Operations Officer") {
+        stepper[2].description = item.status;
+        setActiveStep(3);
+      } else if (item.role === "Chief Finance Officer") {
+        stepper[3].description = item.status;
+        setActiveStep(4);
+      } else if (item.role === "Chief Executive Officer") {
+        stepper[4].description = item.status;
+        setActiveStep(5);
+      } else if (item.role === "Finance Staff") {
+        stepper[5].description = item.status;
+        setActiveStep(6);
+      }
+    });
+
+    stepper[5].description = "Ditolak";
+
+    setSteps(stepper);
+  }, [data]);
 
   const approve = () => {
     http
@@ -79,6 +140,7 @@ const DetailReimbursementPage = () => {
           status: "error",
           isClosable: true,
         });
+        navigate("/reimbursement-history");
       })
       .catch((err) => {
         console.log(err);
@@ -103,6 +165,7 @@ const DetailReimbursementPage = () => {
           status: "error",
           isClosable: true,
         });
+        navigate("/reimbursement-history");
       })
       .catch((err) => {
         console.log(err);
@@ -142,12 +205,38 @@ const DetailReimbursementPage = () => {
     html2pdf().from(printElement).save();
   };
 
+  const onUploadEvidence = (event) => {
+    setIsLoadingUploadFile(true);
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
+
+    http
+      .post("/reimbursements/upload-evidence", formData)
+      .then((res) => {
+        setSelectedFile(event.target.files[0]);
+        setPhoto(res.data.data.url);
+        toast({
+          title: "Upload Berhasil!",
+          description: "File berhasil diupload",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+      })
+      .finally(() => {
+        setIsLoadingUploadFile(false);
+      });
+  };
+
   return (
     <Wrapper
       currentMenu="reimbursement"
       breadcrumbs={[
         {
-          title: "Riwayat Pengajuan",
+          title: "Perihal Pengajuan",
           url: "#",
           isCurrentPage: false,
         },
@@ -157,7 +246,7 @@ const DetailReimbursementPage = () => {
           isCurrentPage: true,
         },
         {
-          title: "Create",
+          title: "Detail",
           url: "#",
           isCurrentPage: true,
         },
@@ -169,7 +258,6 @@ const DetailReimbursementPage = () => {
             {headDivisionList.includes(user.role) ? (
               <>
                 <Button
-                  ml="auto"
                   onClick={() => approve()}
                   leftIcon={<CheckIcon />}
                   colorScheme="teal"
@@ -187,7 +275,7 @@ const DetailReimbursementPage = () => {
               </>
             ) : null}
             <Button
-              ml={headDivisionList.includes(user.role) ? 4 : "auto"}
+              ml="auto"
               onClick={() => printHandler()}
               leftIcon={<CalendarIcon />}
             >
@@ -204,6 +292,68 @@ const DetailReimbursementPage = () => {
               </Button>
             ) : null}
           </Flex>
+          <Grid templateColumns="repeat(6, 1fr)" gap={2} mt="10">
+            {steps.map((step, index) => (
+              <GridItem key={index}>
+                <Card
+                  shadow="lg"
+                  backgroundColor={
+                    step.description === "Disetujui"
+                      ? "teal"
+                      : step.description === "Ditolak"
+                      ? "red"
+                      : ""
+                  }
+                >
+                  <CardBody>
+                    <Flex>
+                      <Box>
+                        <Text
+                          color={
+                            step.description === "Disetujui" ||
+                            step.description === "Ditolak"
+                              ? "white"
+                              : ""
+                          }
+                          fontWeight="bold"
+                        >
+                          {step.title}
+                        </Text>
+                        <Text
+                          color={
+                            step.description === "Disetujui" ||
+                            step.description === "Ditolak"
+                              ? "white"
+                              : ""
+                          }
+                          fontSize="sm"
+                        >
+                          {step.description}
+                        </Text>
+                      </Box>
+                      <Box ml="auto" my="auto">
+                        {step.description === "Disetujui" ? (
+                          <Flex borderRadius="full" borderColor="white" borderWidth="2px" width="30px" height="30px">
+                            <Center m="auto">
+                              <CheckIcon color="white" />
+                            </Center>
+                          </Flex>
+                        ) : step.description === "Ditolak" ? (
+                          <Flex borderRadius="full" borderColor="white" borderWidth="2px" width="30px" height="30px">
+                            <Center m="auto">
+                              <SmallCloseIcon color="white" width="20px" height="20px" />
+                            </Center>
+                          </Flex>
+                        ): (
+                          <TimeIcon width="27px" height="27px" />
+                        )}
+                      </Box>
+                    </Flex>
+                  </CardBody>
+                </Card>
+              </GridItem>
+            ))}
+          </Grid>
           {isLoading ? (
             <Box>
               <Flex justifyContent="center" alignItems="center" height="60vh">
@@ -211,7 +361,11 @@ const DetailReimbursementPage = () => {
               </Flex>
             </Box>
           ) : (
-            <Grid mt="8" templateColumns="repeat(2, 1fr)" gap={6}>
+            <Grid
+              mt="8"
+              templateColumns={{ md: "repeat(2, 1fr)", sm: "repeat(1, 1fr)" }}
+              gap={6}
+            >
               <GridItem>
                 <Flex>
                   <Heading size="md">Buat Pengajuan</Heading>
@@ -276,6 +430,21 @@ const DetailReimbursementPage = () => {
                     </Text>
                   </Flex>
                 ))}
+
+                <Box mt="4">
+                  <Flex>
+                    <Box>
+                      <Text fontSize="xl" fontWeight="bold">
+                        Total
+                      </Text>
+                    </Box>
+                    <Box ml="auto">
+                      <Text fontSize="xl" fontWeight="bold" color="teal">
+                        {rupiah(data.total)}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Box>
               </GridItem>
             </Grid>
           )}

@@ -18,10 +18,11 @@ const WithAuth = (WrappedComponent) => {
       http.defaults.headers.common["Authorization"] = `${accessToken}`;
 
       const user = await http.get("/profiles/me");
+      console.log(user.data);
       if (user.data.status !== "success") {
         return false;
       }
-
+      
       setUser(user.data.data);
 
       return true;
@@ -35,6 +36,7 @@ const WithAuth = (WrappedComponent) => {
         } else {
           setIsLoading(false);
         }
+        console.log(isAuthenticatedResult);
       };
 
       fetchData();

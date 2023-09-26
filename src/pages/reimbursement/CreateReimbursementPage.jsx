@@ -30,7 +30,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import Wrapper from "../../components/Wrapper";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import http from "../../utils/http";
 import angkaTerbilang from "@develoka/angka-terbilang-js";
 import WithAuth from "../../components/WithAuth";
@@ -52,12 +52,12 @@ const CreateReimbursementPage = () => {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [total, setTotal] = useState(0);
 
   const onUploadFile = (event) => {
     setIsLoadingUploadFile(true);
     const formData = new FormData();
     formData.append("file", event.target.files[0]);
-    console.log(event.target.files[0]);
 
     http
       .post("/reimbursements/upload-evidence", formData)
@@ -100,6 +100,10 @@ const CreateReimbursementPage = () => {
     onClose();
   };
 
+  useEffect(() => {
+    console.log(reimbursementItems);
+  }, [reimbursementItems]);
+
   const createReimbursement = () => {
     setIsLoadingCreate(true);
 
@@ -139,6 +143,18 @@ const CreateReimbursementPage = () => {
       });
   };
 
+  useEffect(() => {
+    let total = 0;
+    if (reimbursementItems.length > 1) {
+      total = reimbursementItems.reduce((a, b) => a.subtotal + b.subtotal);
+    } else if (reimbursementItems.length === 1) {
+      total = reimbursementItems[0].subtotal;
+    }
+    console.log(total)
+    setTotal(total);
+  }, [reimbursementItems]);
+
+
   return (
     <Wrapper
       currentMenu="reimbursement"
@@ -160,9 +176,14 @@ const CreateReimbursementPage = () => {
         },
       ]}
     >
-      <Card>
+      <Card mb="4">
         <CardBody>
-          <Grid mt="8" templateColumns="repeat(2, 1fr)" gap={6}>
+          <Grid
+            mt="8"
+            templateColumns={{ md: "repeat(2, 1fr)", sm: "repeat(1, 1fr)" }}
+            gap={6}
+            sm
+          >
             <GridItem>
               <Flex>
                 <Heading size="md">Buat Pengajuan</Heading>
@@ -188,7 +209,7 @@ const CreateReimbursementPage = () => {
               <FormControl mt="4">
                 <FormLabel>Hal / Perihal</FormLabel>
                 <Textarea
-                  placeholder="Here is a sample placeholder"
+                  placeholder="Hal / Perihal"
                   onChange={(event) => setTitle(event.target.value)}
                 />
               </FormControl>
@@ -223,12 +244,33 @@ const CreateReimbursementPage = () => {
                 >
                   <Box>
                     <Text fontSize={"lg"}>{item.description}</Text>
+                    <Text mt="2" fontSize={"sm"} color="gray">
+                      Harga: {rupiah(item.price)}
+                    </Text>
+                    <Text fontSize={"sm"} color="gray">
+                      Kuantitas: {item.quantity}
+                    </Text>
                   </Box>
                   <Text ml="auto" color="teal">
                     {rupiah(item.subtotal)}
                   </Text>
                 </Flex>
               ))}
+
+              <Box mt="4">
+                <Flex>
+                  <Box>
+                    <Text fontSize="xl" fontWeight="bold">
+                      Total
+                    </Text>
+                  </Box>
+                  <Box ml="auto">
+                    <Text fontSize="xl" fontWeight="bold" color="teal">
+                      {rupiah(total)}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Box>
             </GridItem>
           </Grid>
         </CardBody>
@@ -241,14 +283,14 @@ const CreateReimbursementPage = () => {
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Deskripsi</FormLabel>
               <Textarea
-                placeholder="Here is a sample placeholder"
+                placeholder="Hal / Perihal"
                 onChange={(event) => setDescription(event.target.value)}
               />
             </FormControl>
             <FormControl mt="4">
-              <FormLabel>Foto</FormLabel>
+              <FormLabel>Bukti Pengajuan</FormLabel>
               <Input
                 ref={uploadFileRef}
                 type="file"

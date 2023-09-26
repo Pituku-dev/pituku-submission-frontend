@@ -52,7 +52,7 @@ const ListReimbursementPage = () => {
     const getReimbursements = () => {
       setIsLoading(true);
       http
-        .get("/reimbursements")
+        .get("/reimbursements/me")
         .then((res) => {
           console.log(res);
           setReimbursements(res.data.data);
@@ -123,7 +123,7 @@ const ListReimbursementPage = () => {
       ]}
     >
       <Flex my="6">
-        <Box>
+        {/* <Box>
           <Flex>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
@@ -138,7 +138,7 @@ const ListReimbursementPage = () => {
               <option value="option3">Di Setujui</option>
             </Select>
           </Flex>
-        </Box>
+        </Box> */}
         <Button
           colorScheme="teal"
           ml="auto"
@@ -156,7 +156,7 @@ const ListReimbursementPage = () => {
         </Box>
       ) : (
         <TableContainer>
-          <Table variant="striped">
+          <Table variant="striped" overflowX='scroll'>
             <TableCaption>Data reimburesement</TableCaption>
             <Thead>
               <Tr>
@@ -165,7 +165,6 @@ const ListReimbursementPage = () => {
                 <Th>Detail</Th>
                 <Th>Nominal</Th>
                 <Th>DEP</Th>
-                <Th>PIC</Th>
                 <Th>Status</Th>
                 <Th>Action</Th>
               </Tr>
@@ -182,11 +181,6 @@ const ListReimbursementPage = () => {
                   <Td>{item.title}</Td>
                   <Td>{rupiah(item.total)}</Td>
                   <Td>HO</Td>
-                  <Td>
-                    <Tooltip label={item.personInCharge}>
-                      <Avatar name={item.personInCharge} />
-                    </Tooltip>
-                  </Td>
                   <Td>
                     <Badge colorScheme="green">DONE</Badge>
                   </Td>
@@ -223,7 +217,6 @@ const ListReimbursementPage = () => {
                 <Th>Detail</Th>
                 <Th>Nominal</Th>
                 <Th>DEP</Th>
-                <Th>PIC</Th>
                 <Th>Status</Th>
                 <Th>Action</Th>
               </Tr>

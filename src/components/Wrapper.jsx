@@ -46,7 +46,10 @@ export default function Wrapper(props) {
   const { colorMode, toggleColorMode } = useColorMode();
   const btnRef = React.useRef();
   const signOut = async () => {
-    CookieCutter.set('access_token', '');
+    CookieCutter.set("access_token", "", {
+      path: "/",
+      httpOnly: true,
+    });
     return navigate("/login");
   };
 
@@ -216,7 +219,11 @@ export default function Wrapper(props) {
 
           <DrawerFooter>
             <HStack spacing="2">
-              <Button colorScheme="gray" borderRadius="full">
+              <Button
+                colorScheme="gray"
+                borderRadius="full"
+                onClick={() => navigate("/settings/profile")}
+              >
                 <Icon as={FiUser} />
               </Button>
               <Button
@@ -230,7 +237,11 @@ export default function Wrapper(props) {
                   <Icon as={FiMoon} />
                 )}
               </Button>
-              <Button colorScheme="red" borderRadius="full">
+              <Button
+                colorScheme="red"
+                borderRadius="full"
+                onClick={() => signOut()}
+              >
                 <Icon as={FiLogOut} />
               </Button>
             </HStack>

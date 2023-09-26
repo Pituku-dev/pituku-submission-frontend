@@ -44,7 +44,7 @@ const ProfilePage = () => {
         },
       ]}
     >
-      <Card  width="50%">
+      <Card width={{md: "50%", sm: "100%"}}>
         <CardBody>
           {isLoading ? (
             <Box>

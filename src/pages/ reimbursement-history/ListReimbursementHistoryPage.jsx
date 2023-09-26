@@ -166,7 +166,7 @@ export default function ListReimbursementHistoryPage() {
                   <Td>{item.submissionNumber}</Td>
                   <Td>{item.title}</Td>
                   <Td>{rupiah(item.total)}</Td>
-                  <Td>HO</Td>
+                  <Td>{item.departement}</Td>
                   <Td>
                     <Tooltip label={item.personInCharge}>
                       <Avatar name={item.personInCharge} />
