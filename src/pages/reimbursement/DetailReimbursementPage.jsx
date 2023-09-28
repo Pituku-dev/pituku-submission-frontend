@@ -127,7 +127,7 @@ const DetailReimbursementPage = () => {
         toast({
           title: "Approve Berhasil!",
           description: "Sukses! Reimbursement berhasil diapprove.",
-          status: "error",
+          status: "success",
           isClosable: true,
         });
         navigate("/reimbursement-history");
@@ -152,7 +152,7 @@ const DetailReimbursementPage = () => {
         toast({
           title: "Reject Berhasil!",
           description: "Sukses! Reimbursement berhasil direject.",
-          status: "error",
+          status: "success",
           isClosable: true,
         });
         navigate("/reimbursement-history");
@@ -244,7 +244,7 @@ const DetailReimbursementPage = () => {
       <Card>
         <CardBody>
           <Flex>
-            {headDivisionList.includes(user.role) ? (
+            {headDivisionList.includes(user.role) && !data.isReviewed ? (
               <>
                 <Button
                   onClick={() => approve()}

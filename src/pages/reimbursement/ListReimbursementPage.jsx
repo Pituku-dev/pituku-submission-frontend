@@ -156,7 +156,7 @@ const ListReimbursementPage = () => {
         </Box>
       ) : (
         <TableContainer>
-          <Table variant="striped" overflowX='scroll'>
+          <Table variant="striped" overflowX="scroll">
             <TableCaption>Data reimburesement</TableCaption>
             <Thead>
               <Tr>
@@ -180,9 +180,11 @@ const ListReimbursementPage = () => {
                   <Td>{item.submissionNumber}</Td>
                   <Td>{item.title}</Td>
                   <Td>{rupiah(item.total)}</Td>
-                  <Td>HO</Td>
+                  <Td>{item.department}</Td>
                   <Td>
-                    <Badge colorScheme="green">DONE</Badge>
+                    {item.status.toLowerCase() === "diproses" ? (
+                      <Badge colorScheme="yellow">{item.status}</Badge>
+                    ) : null}
                   </Td>
                   <Td>
                     <Menu>

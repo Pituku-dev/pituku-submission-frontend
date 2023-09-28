@@ -48,7 +48,6 @@ const LoginPage = () => {
             isClosable: true,
           });
         }
-        console.log(err);
       })
       .finally(() => {
         setIsloading(false);

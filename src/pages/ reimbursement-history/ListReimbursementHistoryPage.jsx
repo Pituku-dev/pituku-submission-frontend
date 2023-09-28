@@ -35,18 +35,28 @@ import pdf from "../../components/Pdf";
 import Wrapper from "../../components/Wrapper";
 import { rupiah } from "../../utils/currency";
 import http from "../../utils/http";
+import { useUserStore } from "../../stores/useUserStore";
 
 export default function ListReimbursementHistoryPage() {
   const toast = useToast();
   const navigate = useNavigate();
+  const { user } = useUserStore();
   const [reimbursements, setReimbursements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getReimbursements = () => {
       setIsLoading(true);
+
+      let url = "/reimbursements?status=Selesai,Ditolak";
+      if (user.role === "Finance Staff") {
+        url = "/reimbursements";
+      } else if (user.role === "Chief Technology & Marketing Officer") {
+        url = "/reimbursements/my-department?status=Selesai,Ditolak";
+      }
+
       http
-        .get("/reimbursements")
+        .get(url)
         .then((res) => {
           console.log(res);
           setReimbursements(res.data.data);
@@ -166,14 +176,16 @@ export default function ListReimbursementHistoryPage() {
                   <Td>{item.submissionNumber}</Td>
                   <Td>{item.title}</Td>
                   <Td>{rupiah(item.total)}</Td>
-                  <Td>{item.departement}</Td>
+                  <Td>{item.department}</Td>
                   <Td>
                     <Tooltip label={item.personInCharge}>
                       <Avatar name={item.personInCharge} />
                     </Tooltip>
                   </Td>
                   <Td>
-                    <Badge colorScheme="green">DONE</Badge>
+                    {item.status.toLowerCase() === "diproses" ? (
+                      <Badge colorScheme="yellow">{item.status}</Badge>
+                    ) : null}
                   </Td>
                   <Td>
                     <Menu>

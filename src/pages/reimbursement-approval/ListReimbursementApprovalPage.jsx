@@ -67,9 +67,11 @@ const ListReimbursementApprovalPage = () => {
     const getReimbursements = () => {
       setIsLoading(true);
 
-      let url = "/reimbursements/approval-queue";
+      let url = "/reimbursements?status=Selesai,Ditolak";
       if (user.role === "Finance Staff") {
         url = "/reimbursements";
+      } else if(user.role === "Chief Technology & Marketing Officer"){
+        url = "/reimbursements/my-department?status=Selesai,Ditolak"
       }
 
       http
@@ -222,7 +224,7 @@ const ListReimbursementApprovalPage = () => {
                   <Td>{item.submissionNumber}</Td>
                   <Td>{item.title}</Td>
                   <Td>{rupiah(item.total)}</Td>
-                  <Td>HO</Td>
+                  <Td>{item.department}</Td>
                   <Td>
                     <Tooltip label={item.personInCharge}>
                       <Avatar name={item.personInCharge} />
