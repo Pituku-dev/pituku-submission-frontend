@@ -48,11 +48,11 @@ export default function ListReimbursementHistoryPage() {
     const getReimbursements = () => {
       setIsLoading(true);
 
-      let url = "/reimbursements?status=Selesai,Ditolak";
+      let url = "/reimbursements";
       if (user.role === "Finance Staff") {
         url = "/reimbursements";
       } else if (user.role === "Chief Technology & Marketing Officer") {
-        url = "/reimbursements/my-department?status=Selesai,Ditolak";
+        url = "/reimbursements/my-department";
       }
 
       http
