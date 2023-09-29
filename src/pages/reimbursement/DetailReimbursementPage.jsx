@@ -115,8 +115,6 @@ const DetailReimbursementPage = () => {
       }
     });
 
-    stepper[5].description = "Ditolak";
-
     setSteps(stepper);
   }, [data]);
 
