@@ -7,11 +7,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { headDivisionList } from "../utils/roles";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function Sidebar(props) {
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const { role } = useUserStore();
+  const { currentMenu, setCurrentMenu } = useAppStore();
 
   return (
     <Box position="relative" display="unset">
@@ -34,7 +36,7 @@ export default function Sidebar(props) {
           textAlign="start"
           alignItems="baseline"
           bg={
-            props.currentMenu === "dashboard"
+            currentMenu === "dashboard"
               ? colorMode === "light"
                 ? "teal.50"
                 : "teal.900"
@@ -42,6 +44,7 @@ export default function Sidebar(props) {
           }
           _hover={{ bg: colorMode === "light" ? "teal.50" : "teal.900" }}
           onClick={() => {
+            setCurrentMenu("dashboard");
             navigate("/");
           }}
         >
@@ -49,7 +52,7 @@ export default function Sidebar(props) {
             <Icon as={FiActivity} mt="2px" mr="3" w="18px" h="18px" />
             <Text
               fontSize="md"
-              fontWeight={props.currentMenu === "dashboard" ? "bold" : "medium"}
+              fontWeight={currentMenu === "dashboard" ? "bold" : "medium"}
             >
               Dashboard
             </Text>
@@ -65,7 +68,7 @@ export default function Sidebar(props) {
           textAlign="start"
           alignItems="baseline"
           bg={
-            props.currentMenu === "reimbursement"
+            currentMenu === "reimbursement"
               ? colorMode === "light"
                 ? "teal.50"
                 : "teal.900"
@@ -73,6 +76,7 @@ export default function Sidebar(props) {
           }
           _hover={{ bg: colorMode === "light" ? "teal.50" : "teal.900" }}
           onClick={() => {
+            setCurrentMenu("reimbursement");
             navigate("/reimbursement");
           }}
         >
@@ -81,7 +85,7 @@ export default function Sidebar(props) {
             <Text
               fontSize="md"
               fontWeight={
-                props.currentMenu === "reimbursement" ? "bold" : "medium"
+                currentMenu === "reimbursement" ? "bold" : "medium"
               }
             >
               Pengajuan Saya
@@ -99,7 +103,7 @@ export default function Sidebar(props) {
             textAlign="start"
             alignItems="baseline"
             bg={
-              props.currentMenu === "reimbursement-approval"
+              currentMenu === "reimbursement-approval"
                 ? colorMode === "light"
                   ? "teal.50"
                   : "teal.900"
@@ -107,6 +111,7 @@ export default function Sidebar(props) {
             }
             _hover={{ bg: colorMode === "light" ? "teal.50" : "teal.900" }}
             onClick={() => {
+              setCurrentMenu('reimbursement-approval');
               navigate("/reimbursement-approval");
             }}
           >
@@ -115,7 +120,7 @@ export default function Sidebar(props) {
               <Text
                 fontSize="md"
                 fontWeight={
-                  props.currentMenu === "reimbursement-approval"
+                  currentMenu === "reimbursement-approval"
                     ? "bold"
                     : "medium"
                 }
@@ -136,7 +141,7 @@ export default function Sidebar(props) {
             textAlign="start"
             alignItems="baseline"
             bg={
-              props.currentMenu === "reimbursement-history"
+              currentMenu === "reimbursement-history"
                 ? colorMode === "light"
                   ? "teal.50"
                   : "teal.900"
@@ -144,6 +149,7 @@ export default function Sidebar(props) {
             }
             _hover={{ bg: colorMode === "light" ? "teal.50" : "teal.900" }}
             onClick={() => {
+              setCurrentMenu('reimbursement-history');
               navigate("/reimbursement-history");
             }}
           >
@@ -152,7 +158,7 @@ export default function Sidebar(props) {
               <Text
                 fontSize="md"
                 fontWeight={
-                  props.currentMenu === "reimbursement-history"
+                  currentMenu === "reimbursement-history"
                     ? "bold"
                     : "medium"
                 }
@@ -172,7 +178,7 @@ export default function Sidebar(props) {
           textAlign="start"
           alignItems="baseline"
           bg={
-            props.currentMenu === "settings"
+            currentMenu === "settings"
               ? colorMode === "light"
                 ? "orange.50"
                 : "orange.900"
@@ -180,6 +186,7 @@ export default function Sidebar(props) {
           }
           _hover={{ bg: colorMode === "light" ? "orange.50" : "orange.900" }}
           onClick={() => {
+            setCurrentMenu('settings');
             navigate("/settings/profile");
           }}
         >
@@ -187,7 +194,7 @@ export default function Sidebar(props) {
             <Icon as={FiSettings} mt="2px" mr="3" w="18px" h="18px" />
             <Text
               fontSize="md"
-              fontWeight={props.currentMenu === "settings" ? "bold" : "medium"}
+              fontWeight={currentMenu === "settings" ? "bold" : "medium"}
             >
               Pengaturan
             </Text>

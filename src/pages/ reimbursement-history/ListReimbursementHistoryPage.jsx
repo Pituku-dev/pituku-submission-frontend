@@ -40,6 +40,7 @@ export default function ListReimbursementHistoryPage() {
   const { user } = useUserStore();
   const [reimbursements, setReimbursements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     const getReimbursements = () => {
@@ -50,6 +51,10 @@ export default function ListReimbursementHistoryPage() {
         url = "/reimbursements";
       } else if (user.role === "Chief Technology & Marketing Officer") {
         url = "/reimbursements/my-department";
+      }
+
+      if (status) {
+        url += `?status=${status}`
       }
 
       http
@@ -76,7 +81,7 @@ export default function ListReimbursementHistoryPage() {
     getReimbursements();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   const download = (id) => {
     http
@@ -125,11 +130,12 @@ export default function ListReimbursementHistoryPage() {
       <Flex my="6">
         <Box>
           <Flex>
-            <Select ml="4">
-              <option value="option1">Selesai</option>
-              <option value="option2">Di Proses</option>
-              <option value="option3">Di Tolak</option>
-              <option value="option3">Di Setujui</option>
+            <Select ml="4" onChange={(event) => setStatus(event.target.value)}>
+              <option value="">Semua</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Diproses">Di Proses</option>
+              <option value="Ditolak">Di Tolak</option>
+              <option value="Disetujui">Di Setujui</option>
             </Select>
           </Flex>
         </Box>
