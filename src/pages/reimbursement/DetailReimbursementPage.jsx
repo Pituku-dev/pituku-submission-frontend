@@ -53,7 +53,9 @@ const DetailReimbursementPage = () => {
   const uploadFileRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUploadFile, setIsLoadingUploadFile] = useState(false);
-  const [photo, setPhoto] = useState("");
+  const [isLoadingReject, setIsLoadingReject] =
+    useState(false);
+  const [reason, setReason] = useState("");
 
   const [data, setData] = useState({
     id: "",
@@ -67,6 +69,12 @@ const DetailReimbursementPage = () => {
     personInCharge: "",
     department: "",
   });
+
+  const {
+    isOpen: isOpenReject,
+    onOpen: onOpenReject,
+    onClose: onCloseReject,
+  } = useDisclosure();
 
   const [steps, setSteps] = useState([]);
 
@@ -118,7 +126,7 @@ const DetailReimbursementPage = () => {
       }
     });
 
-    if(data.transferProof) {
+    if (data.transferProof) {
       stepper[5].description = "Ditransfer";
     }
 
@@ -146,12 +154,18 @@ const DetailReimbursementPage = () => {
             isClosable: true,
           });
         }
+      })
+      .finally(() => {
+        getReimbursement();
       });
   };
 
   const reject = () => {
+    setIsLoadingReject(true);
     http
-      .post(`/reimbursements/${id}/reject`)
+      .post(`/reimbursements/${id}/reject`, {
+        description: reason,
+      })
       .then((res) => {
         toast({
           title: "Reject Berhasil!",
@@ -170,6 +184,11 @@ const DetailReimbursementPage = () => {
             isClosable: true,
           });
         }
+      })
+      .finally(() => {
+        onCloseReject();
+        getReimbursement();
+        setIsLoadingReject(false);
       });
   };
 
@@ -257,7 +276,7 @@ const DetailReimbursementPage = () => {
                 </Button>
                 <Button
                   ml="2"
-                  onClick={() => reject()}
+                  onClick={() => onOpenReject()}
                   leftIcon={<MinusIcon />}
                   colorScheme="red"
                 >
@@ -290,7 +309,8 @@ const DetailReimbursementPage = () => {
                 <Card
                   shadow="lg"
                   backgroundColor={
-                    step.description === "Disetujui" || step.description === "Ditransfer"
+                    step.description === "Disetujui" ||
+                    step.description === "Ditransfer"
                       ? "teal"
                       : step.description === "Ditolak"
                       ? "red"
@@ -326,7 +346,8 @@ const DetailReimbursementPage = () => {
                         </Text>
                       </Box>
                       <Box ml="auto" my="auto">
-                        {step.description === "Disetujui" || step.description === "Ditransfer" ? (
+                        {step.description === "Disetujui" ||
+                        step.description === "Ditransfer" ? (
                           <Flex
                             borderRadius="full"
                             borderColor="white"
@@ -413,7 +434,12 @@ const DetailReimbursementPage = () => {
                 <Flex mt="8">
                   <Heading size="md">Bukti Transfer</Heading>
                 </Flex>
-                <Image mt="4" src={data.transferProof} width="100%" rounded="lg" />
+                <Image
+                  mt="4"
+                  src={data.transferProof}
+                  width="100%"
+                  rounded="lg"
+                />
               </GridItem>
               <GridItem>
                 <Flex>
@@ -476,6 +502,30 @@ const DetailReimbursementPage = () => {
         onChange={onUploadEvidence}
         hidden
       />
+
+      <Modal onClose={onCloseReject} isOpen={isOpenReject} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reject Reimbursement</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Apakah anda yakin ingin reject reimbursement ini?</Text>
+            <FormControl isRequired mt="4">
+              <FormLabel>Alasan</FormLabel>
+              <Textarea
+                placeholder="Tulis alasan anda"
+                onChange={(event) => setReason(event.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onCloseReject}>Tutup</Button>
+            <Button onClick={() => reject()} colorScheme="red" ml="2" isLoading={isLoadingReject}>
+              Tolak
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Wrapper>
   );
 };
