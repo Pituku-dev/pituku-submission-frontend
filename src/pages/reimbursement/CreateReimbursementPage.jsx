@@ -19,24 +19,21 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
   Text,
   Textarea,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
-import Wrapper from "../../components/Wrapper";
-import { useEffect, useRef, useState } from "react";
-import http from "../../utils/http";
 import angkaTerbilang from "@develoka/angka-terbilang-js";
-import WithAuth from "../../components/WithAuth";
 import dayjs from "dayjs";
-import { rupiah } from "../../utils/currency";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import WithAuth from "../../components/WithAuth";
+import Wrapper from "../../components/Wrapper";
+import { rupiah } from "../../utils/currency";
+import http from "../../utils/http";
 
 const CreateReimbursementPage = () => {
   const toast = useToast();
@@ -81,7 +78,37 @@ const CreateReimbursementPage = () => {
       });
   };
 
+  const validateInput = (inputs) => {
+    let result = false;
+    Object.keys(inputs).forEach((input) => {
+      if (!inputs[input]) {
+        result = false;
+      } else {
+        result = true;
+      }
+    });
+    return result;
+  };
+
   const addReimbursementItem = () => {
+    const validation = validateInput({
+      description,
+      price,
+      quantity: parseInt(quantity),
+      evidence: photo,
+      subtotal: price * quantity,
+    });
+
+    if (!validation) {
+      return toast({
+        title: "Input Error!",
+        description: "Pastikan semua form sudah terisi",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+
     setReimbursementItems((prev) => [
       ...prev,
       {
@@ -113,10 +140,25 @@ const CreateReimbursementPage = () => {
       total += item.price * item.quantity;
     });
 
-    console.log(total);
-    console.log(angkaTerbilang(total));
+    const validation = validateInput({
+      title,
+      total,
+      notes,
+      totalInWords: angkaTerbilang(total),
+      submissionDate: new Date(),
+      submissionItems: reimbursementItems,
+    });
 
-    console.log(title);
+    if (!validation) {
+      setIsLoadingCreate(false);
+      return toast({
+        title: "Input Error!",
+        description: "Pastikan semua form sudah terisi",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
 
     http
       .post("/reimbursements", {
@@ -152,10 +194,9 @@ const CreateReimbursementPage = () => {
     } else if (reimbursementItems.length === 1) {
       total = reimbursementItems[0].subtotal;
     }
-    console.log(total)
+    console.log(total);
     setTotal(total);
   }, [reimbursementItems]);
-
 
   return (
     <Wrapper
@@ -336,10 +377,6 @@ const CreateReimbursementPage = () => {
                   placeholder="0"
                   onChange={(event) => setQuantity(event.target.value)}
                 />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
               </NumberInput>
             </FormControl>
           </ModalBody>

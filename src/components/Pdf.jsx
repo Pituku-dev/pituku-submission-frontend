@@ -206,7 +206,7 @@ export default function pdfJSX(props) {
           style={{
             display: "flex",
             flex: "row",
-            width: "50%",
+            width: "60%",
             marginTop: "40px",
           }}
         >

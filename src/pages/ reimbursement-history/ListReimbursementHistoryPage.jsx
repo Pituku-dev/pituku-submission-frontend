@@ -1,13 +1,10 @@
-import { CheckIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Badge,
   Box,
   Button,
   Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -33,9 +30,9 @@ import ReactDOMServer from "react-dom/server";
 import { useNavigate } from "react-router-dom";
 import pdf from "../../components/Pdf";
 import Wrapper from "../../components/Wrapper";
+import { useUserStore } from "../../stores/useUserStore";
 import { rupiah } from "../../utils/currency";
 import http from "../../utils/http";
-import { useUserStore } from "../../stores/useUserStore";
 
 export default function ListReimbursementHistoryPage() {
   const toast = useToast();
@@ -128,12 +125,6 @@ export default function ListReimbursementHistoryPage() {
       <Flex my="6">
         <Box>
           <Flex>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Search2Icon color="gray.300" />
-              </InputLeftElement>
-              <Input type="tel" placeholder="search" />
-            </InputGroup>
             <Select ml="4">
               <option value="option1">Selesai</option>
               <option value="option2">Di Proses</option>
@@ -185,6 +176,10 @@ export default function ListReimbursementHistoryPage() {
                   <Td>
                     {item.status.toLowerCase() === "diproses" ? (
                       <Badge colorScheme="yellow">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "disetujui" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
+                    ): item.status.toLowerCase() === "selesai" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
                     ) : null}
                   </Td>
                   <Td>

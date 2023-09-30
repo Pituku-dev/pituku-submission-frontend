@@ -18,17 +18,26 @@ import {
   Grid,
   GridItem,
   Heading,
+  Image,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
   Text,
   Textarea,
-  useToast
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import html2pdf from "html2pdf.js/dist/html2pdf.min";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDOMServer from "react-dom/server";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import pdf from "../../components/Pdf";
 import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
@@ -39,12 +48,11 @@ import { headDivisionList } from "../../utils/roles";
 
 const DetailReimbursementPage = () => {
   const toast = useToast();
-  const navigate = useNavigate();
   let { id } = useParams();
   const { user } = useUserStore();
+  const uploadFileRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUploadFile, setIsLoadingUploadFile] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [photo, setPhoto] = useState("");
 
   const [data, setData] = useState({
@@ -61,7 +69,6 @@ const DetailReimbursementPage = () => {
   });
 
   const [steps, setSteps] = useState([]);
-  const [activeStep, setActiveStep] = useState(0);
 
   const getReimbursement = () => {
     http
@@ -90,30 +97,30 @@ const DetailReimbursementPage = () => {
       { title: "COO", description: "Diproses" },
       { title: "CFO", description: "Diproses" },
       { title: "CEO", description: "Diproses" },
-      { title: "Finance Staff", description: "Diproses" },
+      { title: "Finance Staff", description: "Menunggu" },
     ];
 
     logs.forEach((item) => {
-      if (item.role === "Division Head") {
+      if (
+        item.role === "Chief Technology & Marketing Officer" ||
+        item.role === "Corporate Secretary" ||
+        item.role === "Chief Strategy Officer"
+      ) {
         stepper[0].description = item.status;
-        setActiveStep(1);
       } else if (item.role === "Finance Manager") {
         stepper[1].description = item.status;
-        setActiveStep(2);
       } else if (item.role === "Chief Operations Officer") {
         stepper[2].description = item.status;
-        setActiveStep(3);
       } else if (item.role === "Chief Finance Officer") {
         stepper[3].description = item.status;
-        setActiveStep(4);
       } else if (item.role === "Chief Executive Officer") {
         stepper[4].description = item.status;
-        setActiveStep(5);
-      } else if (item.role === "Finance Staff") {
-        stepper[5].description = item.status;
-        setActiveStep(6);
       }
     });
+
+    if(data.transferProof) {
+      stepper[5].description = "Ditransfer";
+    }
 
     setSteps(stepper);
   }, [data]);
@@ -128,7 +135,6 @@ const DetailReimbursementPage = () => {
           status: "success",
           isClosable: true,
         });
-        navigate("/reimbursement-history");
       })
       .catch((err) => {
         console.log(err);
@@ -153,7 +159,6 @@ const DetailReimbursementPage = () => {
           status: "success",
           isClosable: true,
         });
-        navigate("/reimbursement-history");
       })
       .catch((err) => {
         console.log(err);
@@ -198,13 +203,12 @@ const DetailReimbursementPage = () => {
     formData.append("file", event.target.files[0]);
 
     http
-      .post("/reimbursements/upload-evidence", formData)
+      .post(`/reimbursements/${id}/upload-transaction-proof`, formData)
       .then((res) => {
-        setSelectedFile(event.target.files[0]);
-        setPhoto(res.data.data.url);
+        // setPhoto(res.data.data.url);
         toast({
           title: "Upload Berhasil!",
-          description: "File berhasil diupload",
+          description: "Bukti transfer berhasil diupload",
           status: "success",
           duration: 9000,
           isClosable: true,
@@ -268,12 +272,13 @@ const DetailReimbursementPage = () => {
             >
               Print
             </Button>
-            {user.role === "Finance Staff" ? (
+            {user.role === "Finance Staff" && !data.transferProof ? (
               <Button
                 ml="2"
-                // onClick={() => approve()}
+                onClick={() => uploadFileRef.current.click()}
                 leftIcon={<CheckIcon />}
                 colorScheme="teal"
+                isLoading={isLoadingUploadFile}
               >
                 Upload Bukti Transfer
               </Button>
@@ -285,7 +290,7 @@ const DetailReimbursementPage = () => {
                 <Card
                   shadow="lg"
                   backgroundColor={
-                    step.description === "Disetujui"
+                    step.description === "Disetujui" || step.description === "Ditransfer"
                       ? "teal"
                       : step.description === "Ditolak"
                       ? "red"
@@ -298,6 +303,7 @@ const DetailReimbursementPage = () => {
                         <Text
                           color={
                             step.description === "Disetujui" ||
+                            step.description === "Ditransfer" ||
                             step.description === "Ditolak"
                               ? "white"
                               : ""
@@ -309,6 +315,7 @@ const DetailReimbursementPage = () => {
                         <Text
                           color={
                             step.description === "Disetujui" ||
+                            step.description === "Ditransfer" ||
                             step.description === "Ditolak"
                               ? "white"
                               : ""
@@ -319,19 +326,35 @@ const DetailReimbursementPage = () => {
                         </Text>
                       </Box>
                       <Box ml="auto" my="auto">
-                        {step.description === "Disetujui" ? (
-                          <Flex borderRadius="full" borderColor="white" borderWidth="2px" width="30px" height="30px">
+                        {step.description === "Disetujui" || step.description === "Ditransfer" ? (
+                          <Flex
+                            borderRadius="full"
+                            borderColor="white"
+                            borderWidth="2px"
+                            width="30px"
+                            height="30px"
+                          >
                             <Center m="auto">
                               <CheckIcon color="white" />
                             </Center>
                           </Flex>
                         ) : step.description === "Ditolak" ? (
-                          <Flex borderRadius="full" borderColor="white" borderWidth="2px" width="30px" height="30px">
+                          <Flex
+                            borderRadius="full"
+                            borderColor="white"
+                            borderWidth="2px"
+                            width="30px"
+                            height="30px"
+                          >
                             <Center m="auto">
-                              <SmallCloseIcon color="white" width="20px" height="20px" />
+                              <SmallCloseIcon
+                                color="white"
+                                width="20px"
+                                height="20px"
+                              />
                             </Center>
                           </Flex>
-                        ): (
+                        ) : (
                           <TimeIcon width="27px" height="27px" />
                         )}
                       </Box>
@@ -371,6 +394,10 @@ const DetailReimbursementPage = () => {
                   </FormHelperText>
                 </FormControl>
                 <FormControl mt="4">
+                  <FormLabel>PIC</FormLabel>
+                  <Input type="text" value={data.personInCharge} disabled />
+                </FormControl>
+                <FormControl mt="4">
                   <FormLabel>Departemen</FormLabel>
                   <Input type="text" value={data.department} disabled />
                 </FormControl>
@@ -382,6 +409,11 @@ const DetailReimbursementPage = () => {
                     disabled
                   />
                 </FormControl>
+
+                <Flex mt="8">
+                  <Heading size="md">Bukti Transfer</Heading>
+                </Flex>
+                <Image mt="4" src={data.transferProof} width="100%" rounded="lg" />
               </GridItem>
               <GridItem>
                 <Flex>
@@ -437,6 +469,13 @@ const DetailReimbursementPage = () => {
           )}
         </CardBody>
       </Card>
+
+      <Input
+        ref={uploadFileRef}
+        type="file"
+        onChange={onUploadEvidence}
+        hidden
+      />
     </Wrapper>
   );
 };

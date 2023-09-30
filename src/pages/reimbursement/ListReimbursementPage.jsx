@@ -1,23 +1,13 @@
+import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import {
-  AddIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  Search2Icon,
-} from "@chakra-ui/icons";
-import {
-  Avatar,
   Badge,
   Box,
   Button,
   Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Select,
   Spinner,
   Table,
   TableCaption,
@@ -27,20 +17,19 @@ import {
   Tfoot,
   Th,
   Thead,
-  Tooltip,
   Tr,
   useToast,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
+import html2pdf from "html2pdf.js/dist/html2pdf.min";
 import { useEffect, useState } from "react";
+import ReactDOMServer from "react-dom/server";
 import { useNavigate } from "react-router-dom";
+import pdf from "../../components/Pdf";
 import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
-import http from "../../utils/http";
-import dayjs from "dayjs";
 import { rupiah } from "../../utils/currency";
-import pdf from "../../components/Pdf";
-import ReactDOMServer from "react-dom/server";
-import html2pdf from "html2pdf.js/dist/html2pdf.min";
+import http from "../../utils/http";
 
 const ListReimbursementPage = () => {
   const toast = useToast();
@@ -184,6 +173,10 @@ const ListReimbursementPage = () => {
                   <Td>
                     {item.status.toLowerCase() === "diproses" ? (
                       <Badge colorScheme="yellow">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "disetujui" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "selesai" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
                     ) : null}
                   </Td>
                   <Td>

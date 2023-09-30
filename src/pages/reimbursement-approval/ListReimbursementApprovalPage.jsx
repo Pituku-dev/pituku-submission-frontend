@@ -233,6 +233,10 @@ const ListReimbursementApprovalPage = () => {
                   <Td>
                     {item.status.toLowerCase() === "diproses" ? (
                       <Badge colorScheme="yellow">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "disetujui" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "selesai" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
                     ) : null}
                   </Td>
                   <Td>

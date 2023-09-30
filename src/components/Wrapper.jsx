@@ -41,7 +41,7 @@ import Sidebar from "./Sidebar";
 
 export default function Wrapper(props) {
   const navigate = useNavigate();
-  const { role, user } = useUserStore();
+  const { user } = useUserStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const btnRef = React.useRef();
@@ -65,16 +65,11 @@ export default function Wrapper(props) {
         zIndex="99"
         mb={5}
         bg={colorMode === "light" ? "white" : "gray.800"}
-        // shadow="md"
-        // rounded="md"
       >
         <Flex p="4">
           <Image objectFit="cover" src={PitukuLogo} alt="Dan Abramov" />
 
           <Show above="sm" my="auto">
-            {/* <Heading size="lg" my="auto" ml="4" color="teal">
-              Reimbursement
-            </Heading> */}
             <HStack ml="auto" spacing="4">
               <Button
                 colorScheme="gray"
