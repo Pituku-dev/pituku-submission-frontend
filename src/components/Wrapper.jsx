@@ -38,10 +38,12 @@ import { useNavigate } from "react-router-dom";
 import PitukuLogo from "../assets/images/pituku_logo.webp";
 import { useUserStore } from "../stores/useUserStore";
 import Sidebar from "./Sidebar";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function Wrapper(props) {
   const navigate = useNavigate();
   const { user } = useUserStore();
+  const { setCurrentMenu } = useAppStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const btnRef = React.useRef();
@@ -50,6 +52,7 @@ export default function Wrapper(props) {
       path: "/",
       httpOnly: true,
     });
+    setCurrentMenu('dashboard');
     return navigate("/login");
   };
 

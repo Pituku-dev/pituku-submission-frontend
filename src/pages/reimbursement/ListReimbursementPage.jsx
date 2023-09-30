@@ -8,6 +8,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Select,
   Spinner,
   Table,
   TableCaption,
@@ -36,12 +37,20 @@ const ListReimbursementPage = () => {
   const navigate = useNavigate();
   const [reimbursements, setReimbursements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     const getReimbursements = () => {
       setIsLoading(true);
+
+      let url = "/reimbursements/me";
+
+      if (status) {
+        url += `?status=${status}`
+      }
+
       http
-        .get("/reimbursements/me")
+        .get(url)
         .then((res) => {
           console.log(res);
           setReimbursements(res.data.data);
@@ -63,7 +72,7 @@ const ListReimbursementPage = () => {
     getReimbursements();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   
 
@@ -112,22 +121,17 @@ const ListReimbursementPage = () => {
       ]}
     >
       <Flex my="6">
-        {/* <Box>
+        <Box>
           <Flex>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Search2Icon color="gray.300" />
-              </InputLeftElement>
-              <Input type="tel" placeholder="search" />
-            </InputGroup>
-            <Select ml="4">
-              <option value="option1">Selesai</option>
-              <option value="option2">Di Proses</option>
-              <option value="option3">Di Tolak</option>
-              <option value="option3">Di Setujui</option>
+            <Select ml="4" onChange={(event) => setStatus(event.target.value)}>
+              <option value="">Semua</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Diproses">Di Proses</option>
+              <option value="Ditolak">Di Tolak</option>
+              <option value="Disetujui">Di Setujui</option>
             </Select>
           </Flex>
-        </Box> */}
+        </Box>
         <Button
           colorScheme="teal"
           ml="auto"
