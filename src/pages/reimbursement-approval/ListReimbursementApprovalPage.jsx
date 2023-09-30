@@ -5,6 +5,9 @@ import {
   Box,
   Button,
   Flex,
+  FormControl,
+  FormLabel,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,6 +26,7 @@ import {
   Tbody,
   Td,
   Text,
+  Textarea,
   Tfoot,
   Th,
   Thead,
@@ -48,6 +52,7 @@ const ListReimbursementApprovalPage = () => {
   const toast = useToast();
   const { user } = useUserStore();
   const [reimbursements, setReimbursements] = useState([]);
+  const [reason, setReason] = useState("");
   const [currentReimbursement, setCurrentReimbursement] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -70,8 +75,8 @@ const ListReimbursementApprovalPage = () => {
       let url = "/reimbursements";
       if (user.role === "Finance Staff") {
         url = "/reimbursements";
-      } else if(user.role === "Chief Technology & Marketing Officer"){
-        url = "/reimbursements/my-department"
+      } else if (user.role === "Chief Technology & Marketing Officer") {
+        url = "/reimbursements/my-department";
       }
 
       http
@@ -139,7 +144,12 @@ const ListReimbursementApprovalPage = () => {
     http
       .post(`/reimbursements/${currentReimbursement}/approve`)
       .then((res) => {
-        console.log(res);
+        toast({
+          title: "Sukses!",
+          description: "Pengajuan ini berhasil di approve.",
+          status: "success",
+          isClosable: true,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -156,9 +166,16 @@ const ListReimbursementApprovalPage = () => {
 
   const reject = () => {
     http
-      .post(`/reimbursements/${currentReimbursement}/reject`)
+      .post(`/reimbursements/${currentReimbursement}/reject`, {
+        description: reason,
+      })
       .then((res) => {
-        console.log(res);
+        toast({
+          title: "Sukses!",
+          description: "Pengajuan ini berhasil di tolak.",
+          status: "success",
+          isClosable: true,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -257,7 +274,7 @@ const ListReimbursementApprovalPage = () => {
                           Detail
                         </MenuItem>
                         <MenuItem onClick={() => download()}>Download</MenuItem>
-                        {headDivisionList.includes(user.role) ? (
+                        {headDivisionList.includes(user.role) && !item.isReviewed ? (
                           <>
                             <MenuItem
                               color="green.700"
@@ -335,11 +352,18 @@ const ListReimbursementApprovalPage = () => {
           <ModalCloseButton />
           <ModalBody>
             <Text>Apakah anda yakin ingin reject reimbursement ini?</Text>
+            <FormControl isRequired mt="4">
+              <FormLabel>Alasan</FormLabel>
+              <Textarea
+                placeholder="Tulis alasan anda"
+                onChange={(event) => setReason(event.target.value)}
+              />
+            </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onCloseReject}>Close</Button>
-            <Button onClick={() => reject()} colorScheme="teal" ml="2">
-              Reject
+            <Button onClick={onCloseReject}>Tutup</Button>
+            <Button onClick={() => reject()} colorScheme="red" ml="2">
+              Tolak
             </Button>
           </ModalFooter>
         </ModalContent>
