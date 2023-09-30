@@ -315,7 +315,9 @@ export default function pdfJSX(props) {
                 textAlign: "center",
               }}
             >
-              <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              {props.approvalLogs.find(x => x.role === 'Chief Executive Officer') ? (
+                <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              ): null}
               ( Faiz Fauzani R )
             </td>
             <td
@@ -327,7 +329,9 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
-              <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              {props.approvalLogs.find(x => x.role === 'Chief Finance Officer') ? (
+                <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              ): null}
               ( Ibu Wulan )
             </td>
             <td
@@ -339,7 +343,9 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
-              <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              {props.approvalLogs.find(x => x.role === 'Chief Operations Officer') ? (
+                <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              ): null}
               ( Bery Nur Arif )
             </td>
             <td
@@ -351,6 +357,9 @@ export default function pdfJSX(props) {
                 paddingBottom: 14,
               }}
             >
+              {props.approvalLogs.find(x => x.role === 'Chief Technology & Marketing Officer' || x.role === 'Corporate Secretary' || x.role === 'Chief Strategy Officer') ? (
+                <img alt="" src={Ttd} style={{ width: '150px', marginLeft:'auto', marginRight: 'auto' }} />
+              ): null}
               {props.departmentHead}
             </td>
             <td

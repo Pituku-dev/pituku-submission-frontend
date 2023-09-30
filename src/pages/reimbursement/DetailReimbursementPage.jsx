@@ -210,6 +210,7 @@ const DetailReimbursementPage = () => {
         department: data.department,
         departmentHead: data.departmentHead,
         items: data.submissionItems,
+        approvalLogs: data.approvalLogs
       })
     );
 

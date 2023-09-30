@@ -34,6 +34,7 @@ import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
 import { rupiah } from "../../utils/currency";
 import http from "../../utils/http";
+import { NumericFormat } from "react-number-format";
 
 const CreateReimbursementPage = () => {
   const toast = useToast();
@@ -364,9 +365,16 @@ const CreateReimbursementPage = () => {
             <FormControl mt="4">
               <FormLabel>Harga</FormLabel>
               <NumberInput>
-                <NumberInputField
-                  placeholder="Rp. xxxx"
-                  onChange={(event) => setPrice(event.target.value)}
+                <NumericFormat
+                  customInput={Input}
+                  thousandSeparator={true}
+                  prefix={"Rp."}
+                  placeholder="Masukkan harga"
+                  allowNegative={false}
+                  onValueChange={(values) => {
+                    const { value } = values;
+                    setPrice(value);
+                  }}
                 />
               </NumberInput>
             </FormControl>
