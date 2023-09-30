@@ -462,6 +462,7 @@ const DetailReimbursementPage = () => {
                     border="1px"
                     borderColor="gray.200"
                     key={index}
+                    onClick={() => window.open(item.evidenceUrl)}
                   >
                     <Box>
                       <Text fontSize={"lg"}>{item.description}</Text>
@@ -472,7 +473,7 @@ const DetailReimbursementPage = () => {
                         Kuantitas: {item.quantity}
                       </Text>
                       <Link href="#" isExternal>
-                        Lihat Bukti <ExternalLinkIcon mx="2px" />
+                        Lihat Bukti Pembayaran <ExternalLinkIcon mx="2px" />
                       </Link>
                     </Box>
                     <Text ml="auto" color="teal">
