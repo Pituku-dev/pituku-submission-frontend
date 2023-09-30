@@ -1,6 +1,7 @@
 import {
   CalendarIcon,
   CheckIcon,
+  ExternalLinkIcon,
   MinusIcon,
   SmallCloseIcon,
   TimeIcon
@@ -37,7 +38,7 @@ import dayjs from "dayjs";
 import html2pdf from "html2pdf.js/dist/html2pdf.min";
 import { useEffect, useRef, useState } from "react";
 import ReactDOMServer from "react-dom/server";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import pdf from "../../components/Pdf";
 import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
@@ -105,7 +106,7 @@ const DetailReimbursementPage = () => {
       { title: "COO", description: "Diproses" },
       { title: "CFO", description: "Diproses" },
       { title: "CEO", description: "Diproses" },
-      { title: "Finance Staff", description: "Menunggu" },
+      { title: "Pembayaran", description: "Menunggu" },
     ];
 
     logs.forEach((item) => {
@@ -470,6 +471,9 @@ const DetailReimbursementPage = () => {
                       <Text fontSize={"sm"} color="gray">
                         Kuantitas: {item.quantity}
                       </Text>
+                      <Link href="#" isExternal>
+                        Lihat Bukti <ExternalLinkIcon mx="2px" />
+                      </Link>
                     </Box>
                     <Text ml="auto" color="teal">
                       {rupiah(item.subtotal)}
@@ -521,7 +525,12 @@ const DetailReimbursementPage = () => {
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCloseReject}>Tutup</Button>
-            <Button onClick={() => reject()} colorScheme="red" ml="2" isLoading={isLoadingReject}>
+            <Button
+              onClick={() => reject()}
+              colorScheme="red"
+              ml="2"
+              isLoading={isLoadingReject}
+            >
               Tolak
             </Button>
           </ModalFooter>
