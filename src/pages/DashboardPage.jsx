@@ -31,7 +31,7 @@ const DashboardPage = (props) => {
           <Heading size="lg" mb="6">
             Alur Pengajuan
           </Heading>
-          <Image src={FlowPNG} alt="Big Image" mb={4} />
+          <Image src={FlowPNG} alt="Big Image" mb={4} rounded="lg" />
         </GridItem>
         <GridItem>
           <Heading size="lg" mb="6">
