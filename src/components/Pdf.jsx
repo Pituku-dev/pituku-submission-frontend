@@ -218,7 +218,7 @@ export default function pdfJSX(props) {
             <p>Nama Rekening</p>
           </div>
           <div style={{ marginLeft: "auto" }}>
-            <p>: {props.totalInWords.toUpperCase()}</p>
+            <p>: {props.totalInWords.toUpperCase() + " RUPIAH"}</p>
             <p>: {props.notes}</p>
             <p>: {props.bank}</p>
             <p>: {props.bankAccountNumber}</p>

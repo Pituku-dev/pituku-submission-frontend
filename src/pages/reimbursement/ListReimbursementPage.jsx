@@ -181,7 +181,9 @@ const ListReimbursementPage = () => {
                       <Badge colorScheme="teal">{item.status}</Badge>
                     ) : item.status.toLowerCase() === "selesai" ? (
                       <Badge colorScheme="teal">{item.status}</Badge>
-                    ) : null}
+                    ) : item.status.toLowerCase() === "ditolak" ? (
+                      <Badge colorScheme="red">{item.status}</Badge>
+                    ): null}
                   </Td>
                   <Td>
                     <Menu>
