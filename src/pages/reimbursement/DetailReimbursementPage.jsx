@@ -144,6 +144,7 @@ const DetailReimbursementPage = () => {
           status: "success",
           isClosable: true,
         });
+        getReimbursement();
       })
       .catch((err) => {
         console.log(err);
@@ -174,6 +175,7 @@ const DetailReimbursementPage = () => {
           status: "success",
           isClosable: true,
         });
+        getReimbursement();
       })
       .catch((err) => {
         console.log(err);
@@ -234,6 +236,7 @@ const DetailReimbursementPage = () => {
           duration: 9000,
           isClosable: true,
         });
+        getReimbursement();
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
