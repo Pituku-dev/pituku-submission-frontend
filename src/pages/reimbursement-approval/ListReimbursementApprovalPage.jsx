@@ -69,40 +69,41 @@ const ListReimbursementApprovalPage = () => {
     onClose: onCloseReject,
   } = useDisclosure();
 
+  const getReimbursements = () => {
+    setIsLoading(true);
+
+    let url = "/reimbursements/approval-queue";
+    if (user.role === "Finance Staff") {
+      url = "/reimbursements";
+    } else if (user.role === "Chief Technology & Marketing Officer" || user.role === "Corporate Secretary" || user.role === "Chief Strategy Officer") {
+      url = "/reimbursements/my-department";
+    }
+
+    if (status) {
+      url += `?status=${status}`
+    }
+
+    http
+      .get(url)
+      .then((res) => {
+        setReimbursements(res.data.data);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data) {
+          toast({
+            title: "Error getting data reimbursement",
+            description: err.response.data.message,
+            status: "error",
+            isClosable: true,
+          });
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
-    const getReimbursements = () => {
-      setIsLoading(true);
-
-      let url = "/reimbursements/approval-queue";
-      if (user.role === "Finance Staff") {
-        url = "/reimbursements";
-      } else if (user.role === "Chief Technology & Marketing Officer" || user.role === "Corporate Secretary" || user.role === "Chief Strategy Officer") {
-        url = "/reimbursements/my-department";
-      }
-
-      if (status) {
-        url += `?status=${status}`
-      }
-
-      http
-        .get(url)
-        .then((res) => {
-          setReimbursements(res.data.data);
-        })
-        .catch((err) => {
-          if (err.response && err.response.data) {
-            toast({
-              title: "Error getting data reimbursement",
-              description: err.response.data.message,
-              status: "error",
-              isClosable: true,
-            });
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    };
     getReimbursements();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,6 +164,8 @@ const ListReimbursementApprovalPage = () => {
           status: "success",
           isClosable: true,
         });
+        onCloseApprove();
+        getReimbursements();
       })
       .catch((err) => {
         console.log(err);
@@ -189,6 +192,8 @@ const ListReimbursementApprovalPage = () => {
           status: "success",
           isClosable: true,
         });
+        onCloseReject();
+        getReimbursements();
       })
       .catch((err) => {
         console.log(err);
