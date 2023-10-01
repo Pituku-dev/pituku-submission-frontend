@@ -315,7 +315,7 @@ const DetailReimbursementPage = () => {
               </Button>
             ) : null}
           </Flex>
-          <Grid templateColumns="repeat(6, 1fr)" gap={2} mt="10">
+          <Grid templateColumns={{ md: "repeat(6, 1fr)", sm: "repeat(1, 1fr)" }} gap={2} mt="10">
             {steps.map((step, index) => (
               <Tooltip label={step.description}>
                 <GridItem key={index}>
