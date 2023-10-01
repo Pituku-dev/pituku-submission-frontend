@@ -18,6 +18,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Spinner,
   Table,
   TableCaption,
@@ -54,6 +55,7 @@ const ListReimbursementApprovalPage = () => {
   const [reason, setReason] = useState("");
   const [currentReimbursement, setCurrentReimbursement] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState('');
   const navigate = useNavigate();
   const {
     isOpen: isOpenApprove,
@@ -78,10 +80,13 @@ const ListReimbursementApprovalPage = () => {
         url = "/reimbursements/my-department";
       }
 
+      if (status) {
+        url += `?status=${status}`
+      }
+
       http
         .get(url)
         .then((res) => {
-          console.log(res);
           setReimbursements(res.data.data);
         })
         .catch((err) => {
@@ -101,7 +106,7 @@ const ListReimbursementApprovalPage = () => {
     getReimbursements();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   const download = (id) => {
     http
@@ -205,6 +210,19 @@ const ListReimbursementApprovalPage = () => {
         },
       ]}
     >
+      <Flex my="6">
+        <Box>
+          <Flex>
+            <Select ml="4" onChange={(event) => setStatus(event.target.value)}>
+              <option value="">Semua</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Diproses">Di Proses</option>
+              <option value="Ditolak">Di Tolak</option>
+              <option value="Disetujui">Di Setujui</option>
+            </Select>
+          </Flex>
+        </Box>
+      </Flex>
       {isLoading ? (
         <Box>
           <Flex justifyContent="center" alignItems="center" height="60vh">
