@@ -165,7 +165,7 @@ export default function pdfJSX(props) {
                     paddingBottom: 14,
                   }}
                 >
-                  {item.title}
+                  {item.description}
                 </td>
                 <td
                   style={{
@@ -201,6 +201,18 @@ export default function pdfJSX(props) {
             ))}
           </tbody>
         </table>
+
+        <h1
+          style={{
+            fontSize: "14px",
+            background: "#cadfb7",
+            textAlign: "center",
+            fontWeight: "bold",
+            paddingBottom: 14,
+          }}
+        >
+          Total: {rupiah(props.total)}
+        </h1>
 
         <div
           style={{

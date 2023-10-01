@@ -120,9 +120,18 @@ const ListReimbursementApprovalPage = () => {
               .format("DD MMM YYYY"),
             submissionNumber: data.submissionNumber,
             title: data.title,
-            pic: "dia",
-            cp: "saya",
+            pic: data.personInCharge,
+            cp: user.phoneNumber,
+            totalInWords: data.totalInWords,
+            total: data.total,
+            notes: data.notes,
+            bank: user.bank,
+            bankAccountNumber: user.bankAccountNumber,
+            bankAccountName: user.bankAccountName,
+            department: data.department,
+            departmentHead: data.departmentHead,
             items: data.submissionItems,
+            approvalLogs: data.approvalLogs,
           })
         );
 

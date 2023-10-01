@@ -31,6 +31,7 @@ import {
   Spinner,
   Text,
   Textarea,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -101,12 +102,12 @@ const DetailReimbursementPage = () => {
   useEffect(() => {
     const logs = data.approvalLogs || [];
     const stepper = [
-      { title: "Division Head", description: "Diproses" },
-      { title: "Finance Manager", description: "Diproses" },
-      { title: "COO", description: "Diproses" },
-      { title: "CFO", description: "Diproses" },
-      { title: "CEO", description: "Diproses" },
-      { title: "Pembayaran", description: "Menunggu" },
+      { title: "Division Head", status: "Diproses", description: "" },
+      { title: "Finance Manager", status: "Diproses", description: "" },
+      { title: "COO", status: "Diproses", description: "" },
+      { title: "CFO", status: "Diproses", description: "" },
+      { title: "CEO", status: "Diproses", description: "" },
+      { title: "Pembayaran", status: "Menunggu", description: "" },
     ];
 
     logs.forEach((item) => {
@@ -115,20 +116,25 @@ const DetailReimbursementPage = () => {
         item.role === "Corporate Secretary" ||
         item.role === "Chief Strategy Officer"
       ) {
-        stepper[0].description = item.status;
+        stepper[0].status = item.status;
+        stepper[0].description = item.description;
       } else if (item.role === "Finance Manager") {
-        stepper[1].description = item.status;
+        stepper[1].status = item.status;
+        stepper[1].description = item.description;
       } else if (item.role === "Chief Operations Officer") {
-        stepper[2].description = item.status;
+        stepper[2].status = item.status;
+        stepper[2].description = item.description;
       } else if (item.role === "Chief Finance Officer") {
-        stepper[3].description = item.status;
+        stepper[3].status = item.status;
+        stepper[3].description = item.description;
       } else if (item.role === "Chief Executive Officer") {
-        stepper[4].description = item.status;
+        stepper[4].status = item.status;
+        stepper[4].description = item.description;
       }
     });
 
     if (data.transferProof) {
-      stepper[5].description = "Ditransfer";
+      stepper[5].status = "Ditransfer";
     }
 
     setSteps(stepper);
@@ -206,6 +212,7 @@ const DetailReimbursementPage = () => {
         pic: data.personInCharge,
         cp: user.phoneNumber,
         totalInWords: data.totalInWords,
+        total: data.total,
         notes: data.notes,
         bank: user.bank,
         bankAccountNumber: user.bankAccountNumber,
@@ -310,84 +317,86 @@ const DetailReimbursementPage = () => {
           </Flex>
           <Grid templateColumns="repeat(6, 1fr)" gap={2} mt="10">
             {steps.map((step, index) => (
-              <GridItem key={index}>
-                <Card
-                  shadow="lg"
-                  backgroundColor={
-                    step.description === "Disetujui" ||
-                    step.description === "Ditransfer"
-                      ? "teal"
-                      : step.description === "Ditolak"
-                      ? "red"
-                      : ""
-                  }
-                >
-                  <CardBody>
-                    <Flex>
-                      <Box>
-                        <Text
-                          color={
-                            step.description === "Disetujui" ||
-                            step.description === "Ditransfer" ||
-                            step.description === "Ditolak"
-                              ? "white"
-                              : ""
-                          }
-                          fontWeight="bold"
-                        >
-                          {step.title}
-                        </Text>
-                        <Text
-                          color={
-                            step.description === "Disetujui" ||
-                            step.description === "Ditransfer" ||
-                            step.description === "Ditolak"
-                              ? "white"
-                              : ""
-                          }
-                          fontSize="sm"
-                        >
-                          {step.description}
-                        </Text>
-                      </Box>
-                      <Box ml="auto" my="auto">
-                        {step.description === "Disetujui" ||
-                        step.description === "Ditransfer" ? (
-                          <Flex
-                            borderRadius="full"
-                            borderColor="white"
-                            borderWidth="2px"
-                            width="30px"
-                            height="30px"
+              <Tooltip label={step.description}>
+                <GridItem key={index}>
+                  <Card
+                    shadow="lg"
+                    backgroundColor={
+                      step.status === "Disetujui" ||
+                      step.status === "Ditransfer"
+                        ? "teal"
+                        : step.status === "Ditolak"
+                        ? "red"
+                        : ""
+                    }
+                  >
+                    <CardBody>
+                      <Flex>
+                        <Box>
+                          <Text
+                            color={
+                              step.status === "Disetujui" ||
+                              step.status === "Ditransfer" ||
+                              step.status === "Ditolak"
+                                ? "white"
+                                : ""
+                            }
+                            fontWeight="bold"
                           >
-                            <Center m="auto">
-                              <CheckIcon color="white" />
-                            </Center>
-                          </Flex>
-                        ) : step.description === "Ditolak" ? (
-                          <Flex
-                            borderRadius="full"
-                            borderColor="white"
-                            borderWidth="2px"
-                            width="30px"
-                            height="30px"
+                            {step.title}
+                          </Text>
+                          <Text
+                            color={
+                              step.status === "Disetujui" ||
+                              step.status === "Ditransfer" ||
+                              step.status === "Ditolak"
+                                ? "white"
+                                : ""
+                            }
+                            fontSize="sm"
                           >
-                            <Center m="auto">
-                              <SmallCloseIcon
-                                color="white"
-                                width="20px"
-                                height="20px"
-                              />
-                            </Center>
-                          </Flex>
-                        ) : (
-                          <TimeIcon width="27px" height="27px" />
-                        )}
-                      </Box>
-                    </Flex>
-                  </CardBody>
-                </Card>
-              </GridItem>
+                            {step.status}
+                          </Text>
+                        </Box>
+                        <Box ml="auto" my="auto">
+                          {step.status === "Disetujui" ||
+                          step.status === "Ditransfer" ? (
+                            <Flex
+                              borderRadius="full"
+                              borderColor="white"
+                              borderWidth="2px"
+                              width="30px"
+                              height="30px"
+                            >
+                              <Center m="auto">
+                                <CheckIcon color="white" />
+                              </Center>
+                            </Flex>
+                          ) : step.status === "Ditolak" ? (
+                            <Flex
+                              borderRadius="full"
+                              borderColor="white"
+                              borderWidth="2px"
+                              width="30px"
+                              height="30px"
+                            >
+                              <Center m="auto">
+                                <SmallCloseIcon
+                                  color="white"
+                                  width="20px"
+                                  height="20px"
+                                />
+                              </Center>
+                            </Flex>
+                          ) : (
+                            <TimeIcon width="27px" height="27px" />
+                          )}
+                        </Box>
+                      </Flex>
+                    </CardBody>
+                  </Card>
+                </GridItem>
+              </Tooltip>
             ))}
           </Grid>
           {isLoading ? (
