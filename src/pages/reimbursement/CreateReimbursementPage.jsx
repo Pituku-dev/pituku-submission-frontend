@@ -143,11 +143,7 @@ const CreateReimbursementPage = () => {
 
     const validation = validateInput({
       title,
-      total,
       notes,
-      totalInWords: angkaTerbilang(total),
-      submissionDate: new Date(),
-      submissionItems: reimbursementItems,
     });
 
     if (!validation) {

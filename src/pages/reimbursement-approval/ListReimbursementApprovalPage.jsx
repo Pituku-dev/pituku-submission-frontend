@@ -7,7 +7,6 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -33,7 +32,7 @@ import {
   Tooltip,
   Tr,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import html2pdf from "html2pdf.js/dist/html2pdf.min";
@@ -43,9 +42,9 @@ import { useNavigate } from "react-router-dom";
 import pdf from "../../components/Pdf";
 import WithAuth from "../../components/WithAuth";
 import Wrapper from "../../components/Wrapper";
+import { useUserStore } from "../../stores/useUserStore";
 import { rupiah } from "../../utils/currency";
 import http from "../../utils/http";
-import { useUserStore } from "../../stores/useUserStore";
 import { headDivisionList } from "../../utils/roles";
 
 const ListReimbursementApprovalPage = () => {
@@ -72,10 +71,10 @@ const ListReimbursementApprovalPage = () => {
     const getReimbursements = () => {
       setIsLoading(true);
 
-      let url = "/reimbursements";
+      let url = "/reimbursements/approval-queue";
       if (user.role === "Finance Staff") {
         url = "/reimbursements";
-      } else if (user.role === "Chief Technology & Marketing Officer") {
+      } else if (user.role === "Chief Technology & Marketing Officer" || user.role === "Corporate Secretary" || user.role === "Chief Strategy Officer") {
         url = "/reimbursements/my-department";
       }
 
