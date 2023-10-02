@@ -211,17 +211,6 @@ const ListReimbursementPage = () => {
                 </Tr>
               ))}
             </Tbody>
-            <Tfoot>
-              <Tr>
-                <Th>Tanggal Aju</Th>
-                <Th>No. Pangajuan</Th>
-                <Th>Detail</Th>
-                <Th>Nominal</Th>
-                <Th>DEP</Th>
-                <Th>Status</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Tfoot>
           </Table>
         </TableContainer>
       )}

@@ -342,6 +342,7 @@ const DetailReimbursementPage = () => {
                                 : ""
                             }
                             fontWeight="bold"
+                            isTruncated
                           >
                             {step.title}
                           </Text>

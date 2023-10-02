@@ -76,7 +76,7 @@ const ListReimbursementApprovalPage = () => {
     if (user.role === "Finance Staff") {
       url = "/reimbursements";
     } else if (user.role === "Chief Technology & Marketing Officer" || user.role === "Corporate Secretary" || user.role === "Chief Strategy Officer") {
-      url = "/reimbursements/my-department";
+      url = "/reimbursements/approval-queue";
     }
 
     if (status) {
@@ -345,18 +345,6 @@ const ListReimbursementApprovalPage = () => {
                 </Tr>
               ))}
             </Tbody>
-            <Tfoot>
-              <Tr>
-                <Th>Tanggal Aju</Th>
-                <Th>No. Pangajuan</Th>
-                <Th>Detail</Th>
-                <Th>Nominal</Th>
-                <Th>DEP</Th>
-                <Th>PIC</Th>
-                <Th>Status</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Tfoot>
           </Table>
         </TableContainer>
       )}
