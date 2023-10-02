@@ -4,12 +4,13 @@ import {
   Center,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import CookieCutter from "cookie-cutter";
 import { useState } from "react";
@@ -34,7 +35,9 @@ const LoginPage = () => {
         password,
       })
       .then((res) => {
-        http.defaults.headers.common["Authorization"] = `${res.data.data.accessToken}`;
+        http.defaults.headers.common[
+          "Authorization"
+        ] = `${res.data.data.accessToken}`;
         CookieCutter.set("access_token", res.data.data.accessToken);
         setRole(res.data.data.role);
         navigate("/");
@@ -105,9 +108,9 @@ const LoginPage = () => {
                   </Button>
                 </InputRightElement>
               </InputGroup>
-              {/* <FormHelperText>
-                forgot password? <Link href="/reset-password">reset now</Link>
-              </FormHelperText> */}
+              <FormHelperText>
+                forgot password? <a href="/reset-password">reset now</a>
+              </FormHelperText>
             </FormControl>
             <Button
               colorScheme="teal"

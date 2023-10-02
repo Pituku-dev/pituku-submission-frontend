@@ -9,12 +9,16 @@ import DetailReimbursementPage from "./pages/reimbursement/DetailReimbursementPa
 import ListReimbursementPage from "./pages/reimbursement/ListReimbursementPage";
 import ProfilePage from "./pages/settings/ProfilePage";
 import theme from './theme';
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/reimbursement" element={<ListReimbursementPage />} />
         <Route path="/reimbursement/d/:id" element={<DetailReimbursementPage />} />
         <Route path="/reimbursement/create" element={<CreateReimbursementPage />} />

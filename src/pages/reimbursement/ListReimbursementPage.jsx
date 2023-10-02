@@ -15,11 +15,10 @@ import {
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import html2pdf from "html2pdf.js/dist/html2pdf.min";

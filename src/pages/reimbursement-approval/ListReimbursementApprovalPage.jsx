@@ -27,7 +27,6 @@ import {
   Td,
   Text,
   Textarea,
-  Tfoot,
   Th,
   Thead,
   Tooltip,
