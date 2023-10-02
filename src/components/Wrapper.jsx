@@ -19,7 +19,6 @@ import {
   Grid,
   GridItem,
   HStack,
-  Heading,
   Icon,
   Image,
   Menu,
@@ -30,21 +29,30 @@ import {
   Show,
   Text,
   useColorMode,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
+import CookieCutter from "cookie-cutter";
 import React from "react";
 import { FiLogOut, FiMenu, FiMoon, FiSun, FiUser } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import PitukuLogo from "../assets/images/pituku_logo.webp";
+import { useUserStore } from "../stores/useUserStore";
 import Sidebar from "./Sidebar";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function Wrapper(props) {
   const navigate = useNavigate();
+  const { user } = useUserStore();
+  const { setCurrentMenu } = useAppStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const btnRef = React.useRef();
   const signOut = async () => {
-    // CookieCutter.set('access_token', '');
+    CookieCutter.set("access_token", "", {
+      path: "/",
+      httpOnly: true,
+    });
+    setCurrentMenu('dashboard');
     return navigate("/login");
   };
 
@@ -60,16 +68,11 @@ export default function Wrapper(props) {
         zIndex="99"
         mb={5}
         bg={colorMode === "light" ? "white" : "gray.800"}
-        // shadow="md"
-        // rounded="md"
       >
         <Flex p="4">
           <Image objectFit="cover" src={PitukuLogo} alt="Dan Abramov" />
 
           <Show above="sm" my="auto">
-            {/* <Heading size="lg" my="auto" ml="4" color="teal">
-              Reimbursement
-            </Heading> */}
             <HStack ml="auto" spacing="4">
               <Button
                 colorScheme="gray"
@@ -89,14 +92,16 @@ export default function Wrapper(props) {
                       <AvatarBadge boxSize="1.25em" bg="green.500" />
                     </Avatar>
                     <Box ml={4}>
-                      <Text fontSize="lg">Fahriansyah</Text>
-                      <Text fontSize="sm">Head Division</Text>
+                      <Text fontSize="lg">{user.fullName}</Text>
+                      <Text fontSize="sm">{user.role}</Text>
                     </Box>
                   </Flex>
                 </MenuButton>
                 <Portal>
                   <MenuList>
-                    <MenuItem>Profile</MenuItem>
+                    <MenuItem onClick={() => navigate("/settings/profile")}>
+                      Profile
+                    </MenuItem>
                     <MenuItem
                       color="red"
                       _hover={{
@@ -159,7 +164,7 @@ export default function Wrapper(props) {
               mb="5"
             >
               {props.breadcrumbs.map((item, index) => (
-                <BreadcrumbItem>
+                <BreadcrumbItem key={index}>
                   <BreadcrumbLink
                     isCurrentPage={item.isCurrentPage}
                     href={item.url}
@@ -181,7 +186,7 @@ export default function Wrapper(props) {
               mb="5"
             >
               {props.breadcrumbs.map((item, index) => (
-                <BreadcrumbItem>
+                <BreadcrumbItem key={index}>
                   <BreadcrumbLink
                     isCurrentPage={item.isCurrentPage}
                     href={item.url}
@@ -212,7 +217,11 @@ export default function Wrapper(props) {
 
           <DrawerFooter>
             <HStack spacing="2">
-              <Button colorScheme="gray" borderRadius="full">
+              <Button
+                colorScheme="gray"
+                borderRadius="full"
+                onClick={() => navigate("/settings/profile")}
+              >
                 <Icon as={FiUser} />
               </Button>
               <Button
@@ -226,7 +235,11 @@ export default function Wrapper(props) {
                   <Icon as={FiMoon} />
                 )}
               </Button>
-              <Button colorScheme="red" borderRadius="full">
+              <Button
+                colorScheme="red"
+                borderRadius="full"
+                onClick={() => signOut()}
+              >
                 <Icon as={FiLogOut} />
               </Button>
             </HStack>

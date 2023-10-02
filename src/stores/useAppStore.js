@@ -7,6 +7,8 @@ export const useAppStore = create()(
       (set, get) => ({
         theme: "dark",
         changeTheme: (val) => set((state) => ({ theme: val })),
+        currentMenu: "dashboard",
+        setCurrentMenu: (val) => set((state) => ({ currentMenu: val })),
       }),
       {
         name: "appStore",

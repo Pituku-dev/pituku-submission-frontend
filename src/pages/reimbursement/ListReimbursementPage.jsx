@@ -1,20 +1,15 @@
+import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import {
-  Avatar,
   Badge,
   Box,
   Button,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Select,
+  Spinner,
   Table,
   TableCaption,
   TableContainer,
@@ -23,15 +18,92 @@ import {
   Tfoot,
   Th,
   Thead,
-  Tooltip,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
-import Wrapper from "../../components/Wrapper";
-import { AddIcon, CheckIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
+import dayjs from "dayjs";
+import html2pdf from "html2pdf.js/dist/html2pdf.min";
+import { useEffect, useState } from "react";
+import ReactDOMServer from "react-dom/server";
 import { useNavigate } from "react-router-dom";
+import pdf from "../../components/Pdf";
+import WithAuth from "../../components/WithAuth";
+import Wrapper from "../../components/Wrapper";
+import { rupiah } from "../../utils/currency";
+import http from "../../utils/http";
 
-export default function ListReimbursementPage() {
+const ListReimbursementPage = () => {
+  const toast = useToast();
   const navigate = useNavigate();
+  const [reimbursements, setReimbursements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState('');
+
+  useEffect(() => {
+    const getReimbursements = () => {
+      setIsLoading(true);
+
+      let url = "/reimbursements/me";
+
+      if (status) {
+        url += `?status=${status}`
+      }
+
+      http
+        .get(url)
+        .then((res) => {
+          console.log(res);
+          setReimbursements(res.data.data);
+        })
+        .catch((err) => {
+          if (err.response && err.response.data) {
+            toast({
+              title: "Error getting data reimbursement",
+              description: err.response.data.message,
+              status: "error",
+              isClosable: true,
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    };
+    getReimbursements();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  
+
+  const download = (id) => {
+    http
+      .get(`/reimbursements/${id}`)
+      .then((res) => {
+        const data = res.data.data;
+        const printElement = ReactDOMServer.renderToString(
+          pdf({
+            submissionDate: dayjs(data.submissionDate)
+              .locale("id")
+              .format("DD MMM YYYY"),
+            submissionNumber: data.submissionNumber,
+            title: data.title,
+            pic: "dia",
+            cp: "saya",
+            items: data.submissionItems,
+          })
+        );
+
+        html2pdf().from(printElement).save();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <Wrapper
       currentMenu="reimbursement"
@@ -51,187 +123,110 @@ export default function ListReimbursementPage() {
       <Flex my="6">
         <Box>
           <Flex>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Search2Icon color="gray.300" />
-              </InputLeftElement>
-              <Input type="tel" placeholder="search" />
-            </InputGroup>
-            <Select ml="4">
-              <option value="option1">Selesai</option>
-              <option value="option2">Di Proses</option>
-              <option value="option3">Di Tolak</option>
-              <option value="option3">Di Setujui</option>
+            <Select ml="4" onChange={(event) => setStatus(event.target.value)}>
+              <option value="">Semua</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Diproses">Di Proses</option>
+              <option value="Ditolak">Di Tolak</option>
+              <option value="Disetujui">Di Setujui</option>
             </Select>
           </Flex>
         </Box>
-        <Button colorScheme="teal" ml="auto" leftIcon={<AddIcon />} onClick={() => navigate('/reimbursement/create')}>
+        <Button
+          colorScheme="teal"
+          ml="auto"
+          leftIcon={<AddIcon />}
+          onClick={() => navigate("/reimbursement/create")}
+        >
           Buat Pengajuan Baru
         </Button>
       </Flex>
-      <TableContainer>
-        <Table variant="striped">
-          <TableCaption>Data reimburesement</TableCaption>
-          <Thead>
-            <Tr>
-              <Th>Tanggal Aju</Th>
-              <Th>No. Pangajuan</Th>
-              <Th>Detail</Th>
-              <Th>Nominal</Th>
-              <Th>DEP</Th>
-              <Th>PIC</Th>
-              <Th>Status</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td>1 Aug 2023</Td>
-              <Td>2023/08/0001/HO</Td>
-              <Td>4 PAX COFFEE - MANAGEMENT MEET</Td>
-              <Td>Rp. 143.200</Td>
-              <Td>HO</Td>
-              <Td>
-                <Tooltip label="David Abraham">
-                  <Avatar
-                    name="David Abraham"
-                    src="https://bit.ly/dan-abramov"
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Badge colorScheme="green">DONE</Badge>
-              </Td>
-              <Td>
-                <Menu>
-                  <MenuButton
-                    size="sm"
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                  >
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Download</MenuItem>
-                    <MenuItem>Create a Copy</MenuItem>
-                    <MenuItem>Mark as Draft</MenuItem>
-                    <MenuItem
-                      color="green.700"
-                      _hover={{
-                        bg: "green.600",
-                        color: "white",
-                      }}
-                      icon={<CheckIcon />}
-                    >
-                      Tandai Selesai
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Td>
-            </Tr>
-            <Tr>
-              <Td>1 Aug 2023</Td>
-              <Td>2023/08/0001/HO</Td>
-              <Td>4 PAX COFFEE - MANAGEMENT MEET</Td>
-              <Td>Rp. 143.200</Td>
-              <Td>HO</Td>
-              <Td>
-                <Tooltip label="David Abraham">
-                  <Avatar
-                    name="David Abraham"
-                    src="https://bit.ly/dan-abramov"
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Badge colorScheme="green">DONE</Badge>
-              </Td>
-              <Td>
-                <Menu>
-                  <MenuButton
-                    size="sm"
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                  >
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Download</MenuItem>
-                    <MenuItem>Create a Copy</MenuItem>
-                    <MenuItem>Mark as Draft</MenuItem>
-                    <MenuItem
-                      color="green.700"
-                      _hover={{
-                        bg: "green.600",
-                        color: "white",
-                      }}
-                      icon={<CheckIcon />}
-                    >
-                      Tandai Selesai
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Td>
-            </Tr>
-            <Tr>
-              <Td>1 Aug 2023</Td>
-              <Td>2023/08/0001/HO</Td>
-              <Td>4 PAX COFFEE - MANAGEMENT MEET</Td>
-              <Td>Rp. 143.200</Td>
-              <Td>HO</Td>
-              <Td>
-                <Tooltip label="David Abraham">
-                  <Avatar
-                    name="David Abraham"
-                    src="https://bit.ly/dan-abramov"
-                  />
-                </Tooltip>
-              </Td>
-              <Td>
-                <Badge colorScheme="green">DONE</Badge>
-              </Td>
-              <Td>
-                <Menu>
-                  <MenuButton
-                    size="sm"
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                  >
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Download</MenuItem>
-                    <MenuItem>Create a Copy</MenuItem>
-                    <MenuItem>Mark as Draft</MenuItem>
-                    <MenuItem
-                      color="green.700"
-                      _hover={{
-                        bg: "green.600",
-                        color: "white",
-                      }}
-                      icon={<CheckIcon />}
-                    >
-                      Tandai Selesai
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Td>
-            </Tr>
-          </Tbody>
-          <Tfoot>
-            <Tr>
-              <Th>Tanggal Aju</Th>
-              <Th>No. Pangajuan</Th>
-              <Th>Detail</Th>
-              <Th>Nominal</Th>
-              <Th>DEP</Th>
-              <Th>PIC</Th>
-              <Th>Status</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Tfoot>
-        </Table>
-      </TableContainer>
+      {isLoading ? (
+        <Box>
+          <Flex justifyContent="center" alignItems="center" height="60vh">
+            <Spinner />
+          </Flex>
+        </Box>
+      ) : (
+        <TableContainer>
+          <Table variant="striped" overflowX="scroll">
+            <TableCaption>Data reimburesement</TableCaption>
+            <Thead>
+              <Tr>
+                <Th>Tanggal Aju</Th>
+                <Th>No. Pangajuan</Th>
+                <Th>Detail</Th>
+                <Th>Nominal</Th>
+                <Th>DEP</Th>
+                <Th>Status</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {reimbursements.map((item, index) => (
+                <Tr key={index}>
+                  <Td>
+                    {dayjs(item.submissionDate)
+                      .locale("id")
+                      .format("DD MMM YYYY")}
+                  </Td>
+                  <Td>{item.submissionNumber}</Td>
+                  <Td>{item.title}</Td>
+                  <Td>{rupiah(item.total)}</Td>
+                  <Td>{item.department}</Td>
+                  <Td>
+                    {item.status.toLowerCase() === "diproses" ? (
+                      <Badge colorScheme="yellow">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "disetujui" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "selesai" ? (
+                      <Badge colorScheme="teal">{item.status}</Badge>
+                    ) : item.status.toLowerCase() === "ditolak" ? (
+                      <Badge colorScheme="red">{item.status}</Badge>
+                    ): null}
+                  </Td>
+                  <Td>
+                    <Menu>
+                      <MenuButton
+                        size="sm"
+                        as={Button}
+                        rightIcon={<ChevronDownIcon />}
+                      >
+                        Actions
+                      </MenuButton>
+                      <MenuList>
+                        <MenuItem
+                          onClick={() =>
+                            navigate(`/reimbursement/d/${item.id}`)
+                          }
+                        >
+                          Detail
+                        </MenuItem>
+                        <MenuItem onClick={() => download(item.id)}>
+                          Download
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+            <Tfoot>
+              <Tr>
+                <Th>Tanggal Aju</Th>
+                <Th>No. Pangajuan</Th>
+                <Th>Detail</Th>
+                <Th>Nominal</Th>
+                <Th>DEP</Th>
+                <Th>Status</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Tfoot>
+          </Table>
+        </TableContainer>
+      )}
     </Wrapper>
   );
-}
+};
+
+export default WithAuth(ListReimbursementPage);
